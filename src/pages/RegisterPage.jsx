@@ -1,9 +1,10 @@
 // src/pages/RegisterPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// addRegisteredUser 액션 임포트 방식을 변경했습니다. (이전 수정 이력)
 import { registerStart, registerFailure, resetRegisterState, addRegisteredUser, authSlice } from '../features/auth/authSlice';
 import { useNavigate, Link } from 'react-router-dom';
+// --- 중요: Notification.jsx에서 알림 함수들 임포트 ---
+import { notifySuccess, notifyError, notifyWarn } from '../components/Notification';
 
 function RegisterPage() {
   const [username, setUsername] = useState('');
@@ -17,9 +18,14 @@ function RegisterPage() {
   useEffect(() => {
     if (registerSuccess) {
       console.log("회원가입 성공, 로그인 페이지로 이동합니다.");
-      alert('회원가입이 성공적으로 완료되었습니다! 로그인 해주세요.');
-      dispatch(resetRegisterState());
-      navigate('/login');
+      // 기존 alert 대신 notifySuccess 사용
+      // alert('회원가입이 성공적으로 완료되었습니다! 로그인 해주세요.');
+      notifySuccess('회원가입이 성공적으로 완료되었습니다! 로그인 해주세요.', {
+          position: "top-center", // 중앙 상단에 표시
+          autoClose: 3000,
+      });
+      dispatch(resetRegisterState()); // 회원가입 상태 초기화
+      navigate('/login'); // 로그인 페이지로 이동
     }
   }, [registerSuccess, dispatch, navigate]);
 
@@ -30,7 +36,8 @@ function RegisterPage() {
 
     // 비밀번호 일치 확인
     if (password !== confirmPassword) {
-      dispatch(registerFailure('비밀번호가 일치하지 않습니다.'));
+      dispatch(registerFailure('비밀번호가 일치하지 않습니다.')); // Redux 상태 업데이트
+      notifyError('비밀번호가 일치하지 않습니다.'); // 사용자에게 토스트 알림
       console.error("오류: 비밀번호 불일치");
       return;
     }
@@ -38,7 +45,8 @@ function RegisterPage() {
     // 데모용: 아이디 중복 확인 (registeredUsers 목록 활용)
     const userExistsInDemo = registeredUsers.some(user => user.username === username);
     if (userExistsInDemo) {
-        dispatch(registerFailure(`아이디 '${username}'는 이미 존재합니다.`));
+        dispatch(registerFailure(`아이디 '${username}'는 이미 존재합니다.`)); // Redux 상태 업데이트
+        notifyWarn(`아이디 '${username}'는 이미 존재합니다.`); // 사용자에게 토스트 알림
         console.error("오류: 아이디 중복", username);
         return;
     }
@@ -52,17 +60,18 @@ function RegisterPage() {
       // 아이디와 비밀번호가 비어있지 않으면 성공으로 간주
       if (username && password) {
         console.log("시뮬레이션 성공 조건 만족.");
-        // 가상 사용자 정보 저장 및 registerSuccess 디스패치
         dispatch(addRegisteredUser({ username, password })); // 등록된 사용자 정보 저장 액션
-        dispatch(authSlice.actions.registerSuccess()); // authSlice를 통해 직접 접근
+        dispatch(authSlice.actions.registerSuccess()); // 회원가입 성공 액션
       } else {
         console.error("오류: 아이디 또는 비밀번호가 비어있음.");
-        dispatch(registerFailure('아이디와 비밀번호를 모두 입력해주세요.'));
+        dispatch(registerFailure('아이디와 비밀번호를 모두 입력해주세요.')); // Redux 상태 업데이트
+        notifyError('아이디와 비밀번호를 모두 입력해주세요.'); // 사용자에게 토스트 알림
       }
     } catch (err) {
       // 이 catch 블록에 도달했다면 심각한 JavaScript 런타임 오류일 가능성이 높습니다.
       console.error("회원가입 비동기 처리 중 예상치 못한 오류 발생:", err);
-      dispatch(registerFailure('회원가입 중 오류가 발생했습니다. (자세한 내용은 콘솔 확인)'));
+      dispatch(registerFailure('회원가입 중 오류가 발생했습니다. (자세한 내용은 콘솔 확인)')); // Redux 상태 업데이트
+      notifyError('회원가입 중 오류가 발생했습니다. (자세한 내용은 콘솔 확인)'); // 사용자에게 토스트 알림
     }
   };
 

@@ -1,5 +1,7 @@
 // src/components/ContentUpload.jsx
 import React, { useState } from 'react';
+// --- 중요: notifyError 임포트 ---
+import { notifyError } from './Notification'; // Notification.jsx에서 임포트 (경로 확인)
 
 // onAnalyze prop을 통해 부모 컴포넌트로 분석 요청을 전달합니다.
 function ContentUpload({ onAnalyze, isLoading }) {
@@ -18,6 +20,7 @@ function ContentUpload({ onAnalyze, isLoading }) {
       ];
       if (!allowedTypes.includes(file.type)) {
         setFileError('PDF 또는 Word 문서 (doc, docx) 파일만 업로드할 수 있습니다.');
+        notifyError('PDF 또는 Word 문서 (doc, docx) 파일만 업로드할 수 있습니다.'); // 알림 추가
         setSelectedFile(null);
         return;
       }
@@ -39,7 +42,7 @@ function ContentUpload({ onAnalyze, isLoading }) {
       // 부모 컴포넌트로 선택된 파일 또는 입력된 텍스트를 전달
       onAnalyze({ file: selectedFile, text: inputText });
     } else {
-      alert('이력서 파일 또는 텍스트를 입력해주세요.');
+      notifyError('이력서 파일 또는 텍스트를 입력해주세요.'); // 알림 추가
     }
   };
 
@@ -111,16 +114,19 @@ function ContentUpload({ onAnalyze, isLoading }) {
           className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-y min-h-[150px] dark:bg-gray-600 dark:border-gray-500 dark:text-gray-100"
           placeholder="여기에 이력서 내용을 직접 입력하거나 붙여넣으세요..."
           value={inputText}
-          onChange={handleTextChange}
+          onChange={(e) => setInputText(e.target.value)}
           disabled={isLoading}
         ></textarea>
       </div>
 
-      {/* 분석 시작 버튼 (스타일 유지 - 자주 사용되는 색상) */}
+      {/* 분석 시작 버튼 */}
       <button
         onClick={handleSubmit}
         className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-md w-full transition-colors duration-300"
-        disabled={isLoading || (!selectedFile && (inputText.trim() === ''))}
+        // --- 중요: disabled 조건 수정 (주석 확인) ---
+        // 기존: disabled={isLoading || (!selectedFile && (inputText.trim() === ''))}
+        // 변경: isLoading일 때만 비활성화 (버튼 클릭 시 입력 여부 체크는 handleSubmit에서)
+        disabled={isLoading}
       >
         {isLoading ? '분석 중...' : '이력서 분석 시작'}
       </button>

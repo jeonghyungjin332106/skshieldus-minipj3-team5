@@ -3,14 +3,14 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginStart, loginSuccess, loginFailure } from '../features/auth/authSlice';
 import { Link, useNavigate } from 'react-router-dom';
+// --- 중요: notifySuccess, notifyError를 Notification.jsx에서 임포트 ---
+import { notifySuccess, notifyError } from '../components/Notification';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
-  // isLoggedIn 상태도 가져옵니다.
   const { isLoading, error, registeredUsers, isLoggedIn } = useSelector((state) => state.auth);
-  console.log("LoginPage 렌더링 - isLoggedIn:", isLoggedIn);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -26,14 +26,22 @@ function LoginPage() {
 
       if (foundUser) {
         dispatch(loginSuccess({ user: { id: foundUser.username, name: foundUser.username }, token: 'demo-jwt-token-for-' + foundUser.username }));
-        alert(`로그인 성공! 환영합니다, ${foundUser.username}님!`);
+        // --- alert() 대신 notifySuccess 사용 및 인자 수정 ---
+        // alert(`로그인 성공! 환영합니다, ${foundUser.username}님!`); // 기존 alert 주석 처리
+        notifySuccess(`로그인 성공! 환영합니다, ${foundUser.username}님!`);
+        // -----------------------------------------------------
         navigate('/'); // 로그인 성공 후 대시보드 페이지로 자동 이동
       } else {
-        dispatch(loginFailure('아이디 또는 비밀번호가 잘못되었습니다.', '아이디 또는 비밀번호가 잘못되었거나, 등록되지 않은 사용자입니다.'));
+        // --- loginFailure는 하나의 인자(에러 메시지)만 받습니다. ---
+        dispatch(loginFailure('아이디 또는 비밀번호가 잘못되었거나, 등록되지 않은 사용자입니다.')); // 두 번째 인자 제거 및 에러 메시지 명확화
+        // notifyError 호출
+        notifyError('아이디 또는 비밀번호가 잘못되었습니다.');
       }
     } catch (err) {
       console.error("로그인 중 오류 발생:", err);
-      dispatch(loginFailure('로그인 중 오류가 발생했습니다. (자세한 내용은 콘솔 확인)'));
+      dispatch(loginFailure('로그인 중 오류가 발생했습니다. (자세한 내용은 콘솔 확인)')); // Redux 상태 업데이트
+      // notifyError 호출
+      notifyError('로그인 중 오류가 발생했습니다. (자세한 내용은 콘솔 확인)');
     }
   };
 
