@@ -1,11 +1,10 @@
 // src/pages/ChatbotPage.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// Redux Toolkit을 사용하는 경우, authSlice에서 유저 정보 등을 가져올 수 있습니다.
 // import { selectUser } from '../features/auth/authSlice';
 
-// API 호출을 위한 axios (설치 필요: npm install axios)
 import axios from 'axios';
+import { Send, Trash2 } from 'lucide-react';
 
 function ChatbotPage() {
     const [selectedFile, setSelectedFile] = useState(null);
@@ -14,7 +13,6 @@ function ChatbotPage() {
     const [currentMessage, setCurrentMessage] = useState('');
     const [isThinking, setIsThinking] = useState(false); // AI가 응답을 생성 중인지 여부
 
-    // --- Gradio "고급 설정"에 해당하는 상태 변수 ---
     const [chunkSize, setChunkSize] = useState(1000); // 청크 크기
     const [chunkOverlap, setChunkOverlap] = useState(200); // 청크 중복
     const [temperature, setTemperature] = useState(0.0); // 창의성 수준 (슬라이더)
@@ -445,14 +443,18 @@ function ChatbotPage() {
                                     className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 transform hover:scale-105 shadow-md"
                                     disabled={isThinking}
                                 >
-                                    전송
+                                    <span className="flex items-center justify-center">
+                                        <Send size={18} className="mr-2" /> 전송
+                                    </span>
                                 </button>
                                 <button
                                     type="button"
                                     onClick={handleClearChat}
                                     className="px-4 py-3 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-300 transform hover:scale-105 shadow-md"
                                 >
-                                    채팅 초기화
+                                    <span className="flex items-center justify-center">
+                                        <Trash2 size={18} className="mr-1" /> 채팅 초기화
+                                    </span>
                                 </button>
                             </div>
                         </div>
