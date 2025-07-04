@@ -7,10 +7,33 @@ const loadState = () => {
     if (serializedState === null) {
       return undefined;
     }
-    return JSON.parse(serializedState);
+    const storedState = JSON.parse(serializedState);
+    return {
+      ...storedState,
+      isLoading: false,
+      error: null,
+      isRegistering: false,
+      registerError: null,
+      registerSuccess: false,
+    };
   } catch (err) {
     console.error("Error loading state from localStorage:", err);
     return undefined;
+  }
+};
+
+const saveState = (state) => {
+  try {
+    const stateToPersist = {
+      isLoggedIn: state.isLoggedIn,
+      user: state.user,
+      token: state.token,
+      registeredUsers: state.registeredUsers,
+    };
+    const serializedState = JSON.stringify(stateToPersist);
+    localStorage.setItem('auth', serializedState);
+  } catch (err) {
+    console.error("Error saving state to localStorage:", err);
   }
 };
 
@@ -20,10 +43,10 @@ const initialState = loadState() || {
   token: null,
   isLoading: false,
   error: null,
-  // 회원가입 관련 상태 추가
-  isRegistering: false, // 회원가입 진행 중 여부
-  registerError: null,  // 회원가입 에러 메시지
-  registerSuccess: false // 회원가입 성공 여부
+  isRegistering: false,
+  registerError: null,
+  registerSuccess: false,
+  registeredUsers: [],
 };
 
 export const authSlice = createSlice({
@@ -40,11 +63,7 @@ export const authSlice = createSlice({
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.error = null;
-      localStorage.setItem('auth', JSON.stringify({
-        isLoggedIn: true,
-        user: action.payload.user,
-        token: action.payload.token,
-      }));
+      saveState(state);
     },
     loginFailure: (state, action) => {
       state.isLoading = false;
@@ -52,20 +71,32 @@ export const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.error = action.payload;
-      localStorage.removeItem('auth');
+      const currentState = loadState() || {};
+      saveState({
+        ...currentState,
+        isLoggedIn: false,
+        user: null,
+        token: null,
+        registeredUsers: state.registeredUsers
+      });
     },
     logout: (state) => {
       state.isLoggedIn = false;
       state.user = null;
       state.token = null;
       state.error = null;
-      localStorage.removeItem('auth');
-      // 로그아웃 시 회원가입 관련 상태도 초기화
+      const currentState = loadState() || {};
+      saveState({
+        ...currentState,
+        isLoggedIn: false,
+        user: null,
+        token: null,
+        registeredUsers: state.registeredUsers
+      });
       state.isRegistering = false;
       state.registerError = null;
       state.registerSuccess = false;
     },
-    // --- 회원가입 관련 Reducer 추가 ---
     registerStart: (state) => {
       state.isRegistering = true;
       state.registerError = null;
@@ -75,22 +106,33 @@ export const authSlice = createSlice({
       state.isRegistering = false;
       state.registerSuccess = true;
       state.registerError = null;
+      saveState(state);
     },
     registerFailure: (state, action) => {
       state.isRegistering = false;
       state.registerSuccess = false;
       state.registerError = action.payload;
+      saveState(state);
     },
-    resetRegisterState: (state) => { // 회원가입 상태 초기화 (다른 페이지 이동 시 등)
+    resetRegisterState: (state) => {
       state.isRegistering = false;
       state.registerError = null;
       state.registerSuccess = false;
+    },
+    addRegisteredUser: (state, action) => {
+      const { username, password } = action.payload;
+      const userExists = state.registeredUsers.some(user => user.username === username);
+      if (!userExists) {
+        state.registeredUsers.push({ username, password });
+        saveState(state);
+      }
     }
   },
 });
 
-// 새로 추가된 액션들을 export 합니다.
 export const { loginStart, loginSuccess, loginFailure, logout,
-               registerStart, registerSuccess, registerFailure, resetRegisterState } = authSlice.actions;
+               registerStart, registerSuccess, registerFailure, resetRegisterState,
+               addRegisteredUser
+             } = authSlice.actions;
 
 export default authSlice.reducer;

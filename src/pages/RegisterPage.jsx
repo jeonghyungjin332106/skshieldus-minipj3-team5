@@ -1,55 +1,71 @@
-// src/pages/RegisterPage.jsx
+// src/pages/RegisterPageFixed.jsx
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerStart, registerSuccess, registerFailure, resetRegisterState } from '../features/auth/authSlice';
-import { useNavigate, Link } from 'react-router-dom'; // Link 컴포넌트 임포트 추가
+// --- 중요: addRegisteredUser 액션 임포트 방식을 변경했습니다. ---
+// 기존: import { registerStart, registerSuccess, registerFailure, resetRegisterState, addRegisteredUser } from '../features/auth/authSlice';
+// 변경: registerSuccess는 authSlice.actions.registerSuccess로 직접 호출
+import { registerStart, registerFailure, resetRegisterState, addRegisteredUser, authSlice } from '../features/auth/authSlice';
+import { useNavigate, Link } from 'react-router-dom';
 
 function RegisterPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const dispatch = useDispatch();
-  const { isRegistering, registerError, registerSuccess } = useSelector((state) => state.auth);
-  const navigate = useNavigate(); // 라우팅 훅
+  const { isRegistering, registerError, registerSuccess, registeredUsers } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
   // 회원가입 성공 시 로그인 페이지로 리다이렉트
   useEffect(() => {
     if (registerSuccess) {
+      console.log("회원가입 성공, 로그인 페이지로 이동합니다.");
       alert('회원가입이 성공적으로 완료되었습니다! 로그인 해주세요.');
-      dispatch(resetRegisterState()); // 상태 초기화 (다시 회원가입 시도를 위해)
-      navigate('/login'); // 로그인 페이지로 이동
+      dispatch(resetRegisterState());
+      navigate('/login');
     }
   }, [registerSuccess, dispatch, navigate]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    console.log("회원가입 시도:", { username, password, confirmPassword });
+
+    // 비밀번호 일치 확인
     if (password !== confirmPassword) {
       dispatch(registerFailure('비밀번호가 일치하지 않습니다.'));
+      console.error("오류: 비밀번호 불일치");
       return;
     }
 
-    dispatch(registerStart()); // 회원가입 시작 액션 디스패치
+    // --- 데모용: 아이디 중복 확인 ---
+    const userExistsInDemo = registeredUsers.some(user => user.username === username);
+    if (userExistsInDemo) {
+        dispatch(registerFailure(`아이디 '${username}'는 이미 존재합니다.`));
+        console.error("오류: 아이디 중복", username);
+        return;
+    }
+
+    dispatch(registerStart()); // 회원가입 시작 액션 디스패치 (로딩 상태 활성화)
 
     try {
-      // 실제 API 호출 로직은 백엔드 연동 시 추가
-      // 지금은 임시로 성공/실패 시뮬레이션
-      const response = await new Promise(resolve => setTimeout(() => {
-        if (username && password) { // 간단한 유효성 검사
-          // 실제로는 중복 아이디 확인, 비밀번호 정책 등 더 복잡한 로직 필요
-          resolve({ success: true, message: '회원가입 성공' });
-        } else {
-          resolve({ success: false, message: '아이디와 비밀번호를 모두 입력해주세요.' });
-        }
-      }, 1500)); // 1.5초 지연
+      // 1.5초 지연 시뮬레이션
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-      if (response.success) {
-        dispatch(registerSuccess());
+      // 아이디와 비밀번호가 비어있지 않으면 성공으로 간주
+      if (username && password) {
+        console.log("시뮬레이션 성공 조건 만족.");
+        // --- 중요: 가상 사용자 정보 저장 및 registerSuccess 디스패치 ---
+        dispatch(addRegisteredUser({ username, password })); // 등록된 사용자 정보 저장 액션
+        dispatch(authSlice.actions.registerSuccess()); // <-- authSlice를 통해 직접 접근
+        // ------------------------------------------------------------
       } else {
-        dispatch(registerFailure(response.message));
+        console.error("오류: 아이디 또는 비밀번호가 비어있음.");
+        dispatch(registerFailure('아이디와 비밀번호를 모두 입력해주세요.'));
       }
     } catch (err) {
-      dispatch(registerFailure('회원가입 중 오류가 발생했습니다.'));
+      // 이 catch 블록에 도달했다면 심각한 JavaScript 런타임 오류일 가능성이 높습니다.
+      console.error("회원가입 비동기 처리 중 예상치 못한 오류 발생:", err);
+      dispatch(registerFailure('회원가입 중 오류가 발생했습니다. (자세한 내용은 콘솔 확인)'));
     }
   };
 

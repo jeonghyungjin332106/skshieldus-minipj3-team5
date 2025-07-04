@@ -1,43 +1,47 @@
 // src/components/Header.jsx
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../features/auth/authSlice';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux'; // useSelector, useDispatch 임포트
+import { logout } from '../features/auth/authSlice'; // logout 액션 임포트
 
 function Header() {
-  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const { isLoggedIn, user } = useSelector((state) => state.auth); // isLoggedIn과 user 정보 가져오기
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     dispatch(logout());
     alert('로그아웃 되었습니다.');
-    // 로그아웃 후 로그인 페이지 등으로 리다이렉트 로직 추가 필요 (React Router DOM 사용)
+    navigate('/login'); // 로그아웃 후 로그인 페이지로 이동
   };
 
   return (
-    <header className="bg-gray-800 text-white p-4 shadow-md">
-      <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-xl font-bold">AI 커리어 챗봇</h1>
-        <nav>
-          {isLoggedIn ? (
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-300">환영합니다, {user?.name || '사용자'}님!</span>
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300"
-              >
-                로그아웃
-              </button>
-            </div>
-          ) : (
-            <button
-              // 나중에 React Router DOM을 사용하여 로그인 페이지로 이동
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300"
-            >
-              로그인
-            </button>
-          )}
-        </nav>
+    <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
+      <div className="flex items-center">
+        <Link to="/" className="text-xl font-bold">AI 쿼리 챗봇</Link>
+        {isLoggedIn && ( // 로그인 상태일 때만 대시보드 버튼 표시
+          <Link to="/" className="ml-4 px-3 py-1 rounded bg-blue-600 hover:bg-blue-700">
+            대시보드
+          </Link>
+        )}
       </div>
+      <nav>
+        {isLoggedIn ? (
+          <div className="flex items-center">
+            <span className="mr-4">환영합니다, {user?.name}!</span>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 rounded bg-red-600 hover:bg-red-700"
+            >
+              로그아웃
+            </button>
+          </div>
+        ) : (
+          <Link to="/login" className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700">
+            로그인
+          </Link>
+        )}
+      </nav>
     </header>
   );
 }
