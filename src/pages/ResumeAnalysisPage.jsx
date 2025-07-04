@@ -1,79 +1,175 @@
 // src/pages/ResumeAnalysisPage.jsx
-import React from 'react'; // useState 제거
-import { useDispatch, useSelector } from 'react-redux'; // useDispatch, useSelector 임포트
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ContentUpload from '../components/ContentUpload';
 import AnalysisResultDisplay from '../components/AnalysisResultDisplay';
-// analysisSlice의 액션들 임포트
+import ChatWindow from '../components/ChatWindow';
+import ChatInput from '../components/ChatInput';
+
 import { startAnalysis, analysisSuccess, analysisFailure, clearAnalysis } from '../features/analysis/analysisSlice';
+import { addUserMessage, addAiMessage, setAiTyping, setChatError, clearChat } from '../features/chat/chatSlice';
+
+
+const BACKEND_API_BASE_URL = 'http://localhost:8080';
 
 function ResumeAnalysisPage() {
   const dispatch = useDispatch();
-  // --- Redux 스토어에서 분석 상태 가져오기 ---
   const { results: analysisResults, isLoading: isAnalysisLoading, error: analysisError } = useSelector((state) => state.analysis);
+  const { messages: chatMessages, isAiTyping, error: chatError } = useSelector((state) => state.chat);
+  const { token } = useSelector((state) => state.auth);
 
-  // 이력서 분석 데모 시작 함수 (Redux 액션 디스패치로 변경)
-  const startDemoAnalysis = ({ file, text }) => {
+  const [isAnalysisChatMode, setIsAnalysisChatMode] = useState(false);
+  const [currentAnalyzedResume, setCurrentAnalyzedResume] = useState(null);
+
+  const analyzeResume = async ({ file, text }) => {
     if (isAnalysisLoading) return;
 
-    console.log("분석 요청 수신:", file ? file.name : (text ? "텍스트 입력" : "없음"));
-    dispatch(startAnalysis()); // 분석 시작 액션 디스패치
+    dispatch(startAnalysis());
+    dispatch(clearChat());
+    setIsAnalysisChatMode(false);
 
-    // 실제로는 여기에 백엔드 API 호출 로직이 들어갑니다.
-    setTimeout(() => {
-      // 3초 후 가상의 분석 결과 생성
-      if (Math.random() > 0.1) { // 90% 성공, 10% 실패 시뮬레이션
-        dispatch(analysisSuccess({ // 분석 성공 액션 디스패치
-          summary: "이력서에 따르면, 소프트웨어 개발 분야에서 5년 이상의 경력을 보유하고 있으며, 특히 React와 Spring Boot 기반의 웹 애플리케이션 개발에 강점을 보입니다. 문제 해결 능력과 팀 협업 능력이 뛰어납니다." +
-                   (file ? ` (파일: ${file.name} 분석)` : (text ? ` (텍스트: "${text.substring(0, 20)}..." 분석)` : "")),
+    try {
+      console.log("백엔드 API 호출 시뮬레이션 시작:", file ? file.name : (text ? "텍스트 입력" : "없음"));
+
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      if (Math.random() > 0.1) {
+        const mockResults = {
+          summary: "이력서에 따르면, 소프트웨어 개발 분야에서 5년 이상의 경력을 보유하고 있으며, 특히 React와 Spring Boot 기반의 웹 애플리케이션 개발에 강점을 보입니다. 문제 해결 능력과 팀 협업 능력이 뛰어납니다.",
           skills: ["React.js", "Spring Boot", "JavaScript", "Java", "RESTful API", "Git", "SQL"],
           recommendations: "백엔드 개발자, 풀스택 개발자, 또는 자바 기반의 엔터프라이즈 솔루션 개발 직무에 적합합니다.",
           recommendedSkills: ["Kubernetes", "AWS Cloud", "Microservices Architecture"]
-        }));
+        };
+        dispatch(analysisSuccess(mockResults));
+
+        setCurrentAnalyAnalyzedResume(file ? file.name : text);
+        setIsAnalysisChatMode(true);
+
+        const aiIntroMessage = `이력서 분석이 완료되었습니다!\n\n` +
+                               `요약: ${mockResults.summary}\n\n` +
+                               `더 궁금한 점이 있으시면 자유롭게 질문해주세요.`;
+        dispatch(addAiMessage(aiIntroMessage));
+
       } else {
-        dispatch(analysisFailure("이력서 분석 중 예상치 못한 오류가 발생했습니다. 다시 시도해주세요.")); // 분석 실패 액션 디스패치
+        throw new Error("이력서 분석 중 예상치 못한 오류가 발생했습니다. 다시 시도해주세요. (데모 오류)");
       }
-    }, 3000);
+    } catch (err) {
+      console.error("이력서 분석 시뮬레이션 오류:", err);
+      dispatch(analysisFailure(err.message || "알 수 없는 오류가 발생했습니다. (데모 오류)"));
+      setIsAnalysisChatMode(false);
+      dispatch(setChatError(err.message || "채팅 오류 발생"));
+    }
   };
 
-  // 분석 결과 초기화 함수 (Redux 액션 디스패치로 변경)
-  const handleClearAnalysis = () => { // 함수 이름 변경 (clearAnalysis 액션과 충돌 방지)
+  const handleClearAnalysis = () => {
     dispatch(clearAnalysis());
+    dispatch(clearChat());
+    setIsAnalysisChatMode(false);
+    setCurrentAnalyzedResume(null);
+  };
+
+  // --- 추가: 분석 결과로 다시 채팅 시작하는 함수 ---
+  const handleReEnterAnalysisChat = () => {
+    if (analysisResults && !isAnalysisChatMode) { // 분석 결과가 있고 현재 채팅 모드가 아닐 때
+      setIsAnalysisChatMode(true);
+      dispatch(clearChat()); // 새 채팅 세션 시작
+      // AI가 분석 결과를 다시 요약하여 채팅으로 보냅니다.
+      const aiIntroMessage = `이전 이력서 분석 결과에 대한 대화입니다.\n\n` +
+                             `요약: ${analysisResults.summary}\n\n` +
+                             `무엇이 궁금하신가요?`;
+      dispatch(addAiMessage(aiIntroMessage))
+    }
+  };
+  // --------------------------------------------------
+
+  const handleSendMessage = async (messageText) => {
+    dispatch(addUserMessage(messageText));
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    if (Math.random() > 0.1) {
+      let aiResponse = `"${messageText.substring(0, 15)}..."에 대한 AI의 답변입니다.\n\n`;
+      if (messageText.includes("요약") || messageText.includes("강점")) {
+        aiResponse += `이력서의 주요 강점은 ${analysisResults?.skills?.join(', ') || '분석된 강점 없음'} 등이며, ${analysisResults?.summary || '요약된 내용 없음'}입니다.`;
+      } else if (messageText.includes("추천 직무") || messageText.includes("어떤 직무")) {
+        aiResponse += `AI는 ${analysisResults?.recommendations || '추천된 직무 없음'} 직무를 추천합니다. 관련 기술로는 ${analysisResults?.recommendedSkills?.join(', ') || '추천 기술 없음'}이 있습니다.`;
+      } else {
+        aiResponse += `더 구체적인 질문을 해주시면 자세히 설명해 드릴 수 있습니다. (데모 답변)`;
+      }
+      dispatch(addAiMessage(aiResponse));
+    } else {
+      dispatch(setChatError("AI 응답 생성 중 오류가 발생했습니다. 다시 시도해주세요. (AI 데모 오류)"));
+      dispatch(addAiMessage("죄송합니다. AI 응답 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요."));
+    }
+  };
+
+  const handleExitAnalysisChatMode = () => {
+    setIsAnalysisChatMode(false);
+    // dispatch(clearChat()); // 나가도 채팅 내용은 유지되도록 clearChat 제거 (선택 사항)
+    // setCurrentAnalyzedResume(null); // 나가도 분석 결과는 유지되도록 currentAnalyzedResume 초기화 제거
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-6 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center">
+        <h1 className="text-4xl font-extrabold mb-8 text-center dark:text-gray-50">
           이력서 분석
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* 이력서 업로드 및 분석 UI 섹션 (ContentUpload 컴포넌트) */}
-          <div className="md:col-span-1">
-            <ContentUpload onAnalyze={startDemoAnalysis} isLoading={isAnalysisLoading} />
-          </div>
-
-          {/* 이력서 분석 결과 섹션 (AnalysisResultDisplay 컴포넌트) */}
-          <div className="md:col-span-2">
-            {analysisError && ( // 에러 메시지 표시
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong className="font-bold">분석 오류:</strong>
-                <span className="block sm:inline ml-2">{analysisError}</span>
+          <div className="md:col-span-3">
+            {!isAnalysisChatMode ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="md:col-span-1">
+                  <ContentUpload onAnalyze={analyzeResume} isLoading={isAnalysisLoading} />
+                </div>
+                <div className="md:col-span-2">
+                  {analysisError && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                      <strong className="font-bold">분석 오류:</strong>
+                      <span className="block sm:inline ml-2">{analysisError}</span>
+                    </div>
+                  )}
+                  <AnalysisResultDisplay
+                    analysisResults={analysisResults}
+                    isLoading={isAnalysisLoading}
+                  />
+                  {(analysisResults || analysisError) && (
+                    <div className="mt-4 flex justify-center space-x-4"> {/* 버튼들을 위한 flexbox */}
+                      {analysisResults && ( // 분석 결과가 있을 때만 버튼 표시
+                        <button
+                          onClick={handleReEnterAnalysisChat} // <-- 추가된 버튼
+                          className="bg-blue-500 text-white px-5 py-2 rounded-md hover:bg-blue-600 transition-colors duration-300 dark:bg-blue-600 dark:hover:bg-blue-700"
+                        >
+                          분석 결과로 대화하기
+                        </button>
+                      )}
+                      <button
+                        onClick={handleClearAnalysis}
+                        className="bg-gray-400 text-white px-5 py-2 rounded-md hover:bg-gray-500 transition-colors duration-300"
+                      >
+                        분석 결과 초기화
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-            <AnalysisResultDisplay
-              analysisResults={analysisResults} // Redux에서 가져온 결과 사용
-              isLoading={isAnalysisLoading}     // Redux에서 가져온 로딩 상태 사용
-            />
-            {/* 결과 초기화 버튼은 AnalysisResultDisplay 옆에 배치 */}
-            {(analysisResults || analysisError) && ( // 결과 또는 에러가 있을 때만 초기화 버튼 표시
-              <div className="mt-4 text-center">
-                <button
-                  onClick={handleClearAnalysis} // 변경된 함수 이름 사용
-                  className="bg-gray-400 text-white px-5 py-2 rounded-md hover:bg-gray-500 transition-colors duration-300"
-                >
-                  분석 결과 초기화
-                </button>
+            ) : (
+              <div className="bg-white rounded-lg shadow-md p-6 md:col-span-3 dark:bg-gray-700">
+                <h2 className="text-2xl font-bold mb-4 text-center border-b pb-2 dark:text-gray-50 dark:border-gray-600">
+                  이력서 분석 대화
+                  <button onClick={handleExitAnalysisChatMode} className="float-right text-base text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                    [나가기]
+                  </button>
+                </h2>
+                {chatError && (
+                  <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 text-sm dark:bg-red-900 dark:border-red-700 dark:text-red-300" role="alert">
+                    <strong className="font-bold">채팅 오류:</strong>
+                    <span className="block sm:inline ml-2">{chatError}</span>
+                  </div>
+                )}
+                <ChatWindow messages={chatMessages} />
+                <ChatInput onSendMessage={handleSendMessage} isLoading={isAiTyping} />
               </div>
             )}
           </div>

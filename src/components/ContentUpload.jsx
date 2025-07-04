@@ -44,18 +44,23 @@ function ContentUpload({ onAnalyze, isLoading }) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">이력서 업로드 및 분석</h2>
+    // 컴포넌트 전체 배경 및 그림자 (다크 모드 적용)
+    <div className="bg-white rounded-lg shadow-md p-6 dark:bg-gray-700">
+      {/* 제목 텍스트 색상 (다크 모드 적용) */}
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center dark:text-gray-50">이력서 업로드 및 분석</h2>
 
       {/* 파일 업로드 섹션 */}
-      <div className="mb-6 border-b pb-6">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="file-upload">
+      <div className="mb-6 border-b pb-6 dark:border-gray-600"> {/* 하단 보더 색상 */}
+        {/* 라벨 텍스트 색상 (다크 모드 적용) */}
+        <label className="block text-gray-700 text-sm font-bold mb-2 dark:text-gray-300" htmlFor="file-upload">
           1. 이력서 파일 업로드 (PDF, Word)
         </label>
-        <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+        {/* 드래그 앤 드롭 영역 테두리 및 배경 (다크 모드 적용) */}
+        <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md dark:border-gray-600">
           <div className="space-y-1 text-center">
+            {/* SVG 아이콘 색상 (다크 모드 적용) */}
             <svg
-              className="mx-auto h-12 w-12 text-gray-400"
+              className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500"
               stroke="currentColor"
               fill="none"
               viewBox="0 0 48 48"
@@ -63,10 +68,11 @@ function ContentUpload({ onAnalyze, isLoading }) {
             >
               <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <div className="flex text-sm text-gray-600">
+            <div className="flex text-sm text-gray-600 dark:text-gray-300"> {/* 텍스트 색상 */}
               <label
                 htmlFor="file-upload"
-                className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
+                // 파일 선택 버튼 배경 및 텍스트 색상 (다크 모드 적용)
+                className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500 dark:bg-gray-700 dark:text-blue-400 dark:hover:text-blue-300"
               >
                 <span>파일 선택</span>
                 <input
@@ -81,12 +87,13 @@ function ContentUpload({ onAnalyze, isLoading }) {
               </label>
               <p className="pl-1">또는 파일을 드래그 앤 드롭</p>
             </div>
-            <p className="text-xs text-gray-500">PDF, DOC, DOCX 파일 (최대 10MB)</p>
+            {/* 파일 형식 안내 텍스트 색상 (다크 모드 적용) */}
+            <p className="text-xs text-gray-500 dark:text-gray-400">PDF, DOC, DOCX 파일 (최대 10MB)</p>
             {selectedFile && (
-              <p className="text-sm text-gray-700 mt-2">선택된 파일: <span className="font-semibold">{selectedFile.name}</span></p>
+              <p className="text-sm text-gray-700 mt-2 dark:text-gray-300">선택된 파일: <span className="font-semibold">{selectedFile.name}</span></p>
             )}
             {fileError && (
-              <p className="text-sm text-red-500 mt-2">{fileError}</p>
+              <p className="text-sm text-red-500 mt-2 dark:text-red-300">{fileError}</p>
             )}
           </div>
         </div>
@@ -94,12 +101,14 @@ function ContentUpload({ onAnalyze, isLoading }) {
 
       {/* 텍스트 직접 입력 섹션 */}
       <div className="mb-6">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="text-input">
+        {/* 라벨 텍스트 색상 (다크 모드 적용) */}
+        <label className="block text-gray-700 text-sm font-bold mb-2 dark:text-gray-300" htmlFor="text-input">
           2. 이력서 내용 직접 입력
         </label>
         <textarea
           id="text-input"
-          className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-y min-h-[150px]"
+          // 텍스트 입력 필드 스타일 (다크 모드 적용)
+          className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-y min-h-[150px] dark:bg-gray-600 dark:border-gray-500 dark:text-gray-100"
           placeholder="여기에 이력서 내용을 직접 입력하거나 붙여넣으세요..."
           value={inputText}
           onChange={handleTextChange}
@@ -107,7 +116,7 @@ function ContentUpload({ onAnalyze, isLoading }) {
         ></textarea>
       </div>
 
-      {/* 분석 시작 버튼 */}
+      {/* 분석 시작 버튼 (스타일 유지 - 자주 사용되는 색상) */}
       <button
         onClick={handleSubmit}
         className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-md w-full transition-colors duration-300"

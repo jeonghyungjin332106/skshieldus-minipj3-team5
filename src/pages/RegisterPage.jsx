@@ -1,9 +1,7 @@
-// src/pages/RegisterPageFixed.jsx
+// src/pages/RegisterPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// --- 중요: addRegisteredUser 액션 임포트 방식을 변경했습니다. ---
-// 기존: import { registerStart, registerSuccess, registerFailure, resetRegisterState, addRegisteredUser } from '../features/auth/authSlice';
-// 변경: registerSuccess는 authSlice.actions.registerSuccess로 직접 호출
+// addRegisteredUser 액션 임포트 방식을 변경했습니다. (이전 수정 이력)
 import { registerStart, registerFailure, resetRegisterState, addRegisteredUser, authSlice } from '../features/auth/authSlice';
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -37,7 +35,7 @@ function RegisterPage() {
       return;
     }
 
-    // --- 데모용: 아이디 중복 확인 ---
+    // 데모용: 아이디 중복 확인 (registeredUsers 목록 활용)
     const userExistsInDemo = registeredUsers.some(user => user.username === username);
     if (userExistsInDemo) {
         dispatch(registerFailure(`아이디 '${username}'는 이미 존재합니다.`));
@@ -54,10 +52,9 @@ function RegisterPage() {
       // 아이디와 비밀번호가 비어있지 않으면 성공으로 간주
       if (username && password) {
         console.log("시뮬레이션 성공 조건 만족.");
-        // --- 중요: 가상 사용자 정보 저장 및 registerSuccess 디스패치 ---
+        // 가상 사용자 정보 저장 및 registerSuccess 디스패치
         dispatch(addRegisteredUser({ username, password })); // 등록된 사용자 정보 저장 액션
-        dispatch(authSlice.actions.registerSuccess()); // <-- authSlice를 통해 직접 접근
-        // ------------------------------------------------------------
+        dispatch(authSlice.actions.registerSuccess()); // authSlice를 통해 직접 접근
       } else {
         console.error("오류: 아이디 또는 비밀번호가 비어있음.");
         dispatch(registerFailure('아이디와 비밀번호를 모두 입력해주세요.'));
@@ -70,18 +67,25 @@ function RegisterPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
-        <h2 className="text-2xl font-bold text-center mb-6">회원가입</h2>
+    // 페이지 전체 배경색 및 기본 텍스트 색상
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+      {/* 회원가입 박스 배경 및 그림자 */}
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm dark:bg-gray-700">
+        {/* 제목 텍스트 색상 */}
+        <h2 className="text-2xl font-bold text-center mb-6 dark:text-gray-50">
+          회원가입
+        </h2>
         <form onSubmit={handleRegister}>
           <div className="mb-4">
-            <label htmlFor="username" className="block text-gray-700 text-sm font-bold mb-2">
+            {/* 라벨 텍스트 색상 */}
+            <label htmlFor="username" className="block text-gray-700 text-sm font-bold mb-2 dark:text-gray-300">
               아이디
             </label>
             <input
               type="text"
               id="username"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              // 입력 필드 스타일: 배경, 테두리, 텍스트 색상 (다크 모드 적용)
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-600 dark:border-gray-500 dark:text-gray-100"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               disabled={isRegistering}
@@ -89,13 +93,15 @@ function RegisterPage() {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
+            {/* 라벨 텍스트 색상 */}
+            <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2 dark:text-gray-300">
               비밀번호
             </label>
             <input
               type="password"
               id="password"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+              // 입력 필드 스타일: 배경, 테두리, 텍스트 색상 (다크 모드 적용)
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-600 dark:border-gray-500 dark:text-gray-100"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isRegistering}
@@ -103,20 +109,23 @@ function RegisterPage() {
             />
           </div>
           <div className="mb-6">
-            <label htmlFor="confirmPassword" className="block text-gray-700 text-sm font-bold mb-2">
+            {/* 라벨 텍스트 색상 */}
+            <label htmlFor="confirmPassword" className="block text-gray-700 text-sm font-bold mb-2 dark:text-gray-300">
               비밀번호 확인
             </label>
             <input
               type="password"
               id="confirmPassword"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+              // 입력 필드 스타일: 배경, 테두리, 텍스트 색상 (다크 모드 적용)
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-600 dark:border-gray-500 dark:text-gray-100"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={isRegistering}
               required
             />
           </div>
-          {registerError && <p className="text-red-500 text-xs italic mb-4">{registerError}</p>}
+          {/* 에러 메시지 텍스트 색상 */}
+          {registerError && <p className="text-red-500 text-xs italic mb-4 dark:text-red-300">{registerError}</p>}
           <div className="flex items-center justify-between">
             <button
               type="submit"
@@ -127,8 +136,9 @@ function RegisterPage() {
             </button>
           </div>
         </form>
-        <p className="text-center text-gray-600 text-sm mt-4">
-          이미 계정이 있으신가요? <Link to="/login" className="text-blue-500 hover:underline">로그인</Link>
+        {/* 로그인 링크 텍스트 색상 */}
+        <p className="text-center text-gray-600 text-sm mt-4 dark:text-gray-400">
+          이미 계정이 있으신가요? <Link to="/login" className="text-blue-500 hover:underline dark:text-blue-400">로그인</Link>
         </p>
       </div>
     </div>

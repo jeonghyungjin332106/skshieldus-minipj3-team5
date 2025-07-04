@@ -1,14 +1,15 @@
 // src/App.jsx
-import React from 'react';
+import React, { useEffect } from 'react'; // useEffect 임포트 추가
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Header from './components/Header';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
-import ResumeAnalysisPage from './pages/ResumeAnalysisPage'; // <-- ResumeAnalysisPage 임포트 추가
+import ResumeAnalysisPage from './pages/ResumeAnalysisPage';
+import InterviewQuestionsPage from './pages/InterviewQuestionsPage';
+import UserGuidePage from './pages/UserGuidePage';
 
-// 로그인 된 사용자만 접근 가능한 라우트를 보호하는 컴포넌트
 const PrivateRoute = ({ children }) => {
   const { isLoggedIn } = useSelector((state) => state.auth);
   return isLoggedIn ? children : <Navigate to="/login" replace />;
@@ -16,39 +17,37 @@ const PrivateRoute = ({ children }) => {
 
 function App() {
   const { isLoggedIn } = useSelector((state) => state.auth);
+  // --- 중요: isDarkMode 상태 가져오기 ---
+  const { isDarkMode } = useSelector((state) => state.theme);
+
+  // isDarkMode 상태가 변경될 때마다 html 태그에 'dark' 클래스 토글
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+  // ------------------------------------
 
   return (
     <BrowserRouter>
+      {/* App 컴포넌트 자체에는 배경색을 지정하지 않습니다. Tailwind가 html/body에 적용합니다. */}
       <div className="flex flex-col min-h-screen">
         <Header />
         <main className="flex-grow">
           <Routes>
-            {/* 로그인 페이지 */}
             <Route path="/login" element={<LoginPage />} />
-            {/* 회원가입 페이지 */}
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/guide" element={<UserGuidePage />} />
 
-            {/* 대시보드 페이지 (로그인 시에만 접근 가능) */}
-            <Route path="/" element={
-              <PrivateRoute>
-                <DashboardPage />
-              </PrivateRoute>
-            } />
+            <Route path="/" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+            <Route path="/resume-analysis" element={<PrivateRoute><ResumeAnalysisPage /></PrivateRoute>} />
+            <Route path="/interview-questions" element={<PrivateRoute><InterviewQuestionsPage /></PrivateRoute>} />
 
-            {/* --- 중요: 이력서 분석 페이지 라우트 추가 --- */}
-            <Route path="/resume-analysis" element={
-              <PrivateRoute>
-                <ResumeAnalysisPage />
-              </PrivateRoute>
-            } />
-            {/* ------------------------------------------- */}
-
-            {/* 정의되지 않은 모든 경로에 대한Fallback 라우트: 로그인 상태에 따라 리다이렉트 */}
             <Route path="*" element={isLoggedIn ? <Navigate to="/" replace /> : <Navigate to="/login" replace />} />
-
           </Routes>
         </main>
-        {/* Footer 컴포넌트가 있다면 여기에 추가 */}
       </div>
     </BrowserRouter>
   );
