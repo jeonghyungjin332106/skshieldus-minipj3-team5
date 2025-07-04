@@ -42,7 +42,7 @@ function ResumeAnalysisPage() {
         };
         dispatch(analysisSuccess(mockResults));
 
-        setCurrentAnalyAnalyzedResume(file ? file.name : text);
+        setCurrentAnalyzedResume(file ? file.name : text);
         setIsAnalysisChatMode(true);
 
         const aiIntroMessage = `이력서 분석이 완료되었습니다!\n\n` +
