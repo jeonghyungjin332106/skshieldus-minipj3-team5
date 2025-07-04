@@ -1,7 +1,6 @@
 // src/pages/ChatbotPage.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// Redux Toolkit을 사용하는 경우, authSlice에서 유저 정보 등을 가져올 수 있습니다.
 // import { selectUser } from '../features/auth/authSlice';
 
 // API 호출을 위한 axios (데모에서는 직접 사용하지 않지만, 구조 유지를 위해 임포트)
