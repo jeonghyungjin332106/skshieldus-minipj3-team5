@@ -191,10 +191,10 @@ function ChatbotPage() {
 
     return (
         <div className="flex flex-col h-screen bg-gradient-to-br from-blue-50 to-indigo-100 font-inter">
-            {/* Header */}
-            <header className="bg-gradient-to-r from-blue-700 to-blue-900 text-white p-4 shadow-lg flex justify-between items-center rounded-b-xl">
+            {/* Header 우선 주석처리*/}
+            {/* <header className="bg-gradient-to-r from-blue-700 to-blue-900 text-white p-4 shadow-lg flex justify-between items-center rounded-b-xl">
                 <h1 className="text-2xl font-extrabold tracking-wide">내일을 위한 가이드: AI 커리어 챗봇</h1>
-            </header>
+            </header> */}
 
             <div className="flex flex-1 overflow-hidden p-6">
                 {/* Left Column: PDF Upload & Advanced Settings */}
