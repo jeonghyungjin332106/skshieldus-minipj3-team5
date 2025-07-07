@@ -1,8 +1,27 @@
-services:
+# docker-compose.yml
 
+# Docker Compose 파일 버전 명시
+version: '3.8'
+
+services:
+  # --- [추가된 프론트엔드 서비스] ---
+  frontend:
+    # 'frontend' 폴더에 있는 Dockerfile을 사용하여 이미지를 빌드합니다.
+    build: ./frontend
+    ports:
+      # 호스트 PC의 3000번 포트를 컨테이너의 80번 포트와 연결합니다.
+      # 이제 브라우저에서 http://localhost:3000 으로 접속할 수 있습니다.
+      - "3000:80"
+    # 백엔드 서비스가 먼저 실행된 후에 프론트엔드 서비스를 시작하도록 의존성을 설정합니다.
+    depends_on:
+      - backend
+
+  # --- [기존 백엔드 서비스] ---
   backend:
     build: ./backend
     ports:
+      # 백엔드 포트는 외부에서 직접 접근할 필요가 없으므로 주석 처리하거나 삭제해도 괜찮습니다.
+      # 하지만 개발 중 디버깅을 위해 남겨두는 것도 좋습니다.
       - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/AiCareerChatBot_db?allowPublicKeyRetrieval=true&useSSL=false
@@ -20,6 +39,7 @@ services:
     volumes:
       - ./backend/logs:/app/logs
 
+  # --- [기존 Redis 서비스] ---
   redis:
     image: redis:7
     container_name: redis
@@ -33,6 +53,7 @@ services:
       retries: 3
       start_period: 30s
 
+  # --- [기존 MariaDB 서비스] ---
   mariadb:
     image: mariadb:11.4
     container_name: mariadb
@@ -55,3 +76,4 @@ services:
 
 volumes:
   mariadb_data:
+

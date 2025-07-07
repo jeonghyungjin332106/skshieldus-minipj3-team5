@@ -162,3 +162,451 @@ AiCareerChatBot.demo.exception.BusinessException: 비밀번호가 일치하지 �
 2025-07-07T01:44:23.769Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2025-07-07T01:44:23.771Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2025-07-07T01:44:23.775Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-07-07T11:42:19.456Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Starting AiCareerChatBotApplication v0.0.1-SNAPSHOT using Java 17.0.15 with PID 1 (/app/app.jar started by root in /app)
+2025-07-07T11:42:19.458Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : The following 1 profile is active: "prod"
+2025-07-07T11:42:20.296Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T11:42:20.298Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-07T11:42:20.420Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 113 ms. Found 1 JPA repository interface.
+2025-07-07T11:42:20.436Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T11:42:20.438Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-07-07T11:42:20.454Z  INFO 1 --- [AiCareerChatBot] [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface AiCareerChatBot.demo.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-07-07T11:42:20.455Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 Redis repository interfaces.
+2025-07-07T11:42:21.105Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-07-07T11:42:21.124Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-07-07T11:42:21.125Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-07T11:42:21.157Z  INFO 1 --- [AiCareerChatBot] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-07-07T11:42:21.158Z  INFO 1 --- [AiCareerChatBot] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1660 ms
+2025-07-07T11:42:21.333Z  INFO 1 --- [AiCareerChatBot] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-07T11:42:21.418Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-07T11:42:21.469Z  INFO 1 --- [AiCareerChatBot] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-07-07T11:42:21.781Z  INFO 1 --- [AiCareerChatBot] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-07T11:42:21.831Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-07-07T11:42:21.929Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@75452aea
+2025-07-07T11:42:21.931Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-07-07T11:42:21.953Z  WARN 1 --- [AiCareerChatBot] [main] org.hibernate.orm.deprecation            : HHH90000025: MariaDBDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-07T11:42:21.969Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 11.4.7
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-07T11:42:22.533Z  INFO 1 --- [AiCareerChatBot] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-07T11:42:22.582Z  INFO 1 --- [AiCareerChatBot] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T11:42:23.273Z  WARN 1 --- [AiCareerChatBot] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-07T11:42:23.602Z  WARN 1 --- [AiCareerChatBot] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 630a32a1-31b6-4008-86c5-49e45493fb47
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2025-07-07T11:42:23.625Z  INFO 1 --- [AiCareerChatBot] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-07-07T11:42:24.276Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-07-07T11:42:24.304Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Started AiCareerChatBotApplication in 5.371 seconds (process running for 5.924)
+2025-07-07T11:43:15.255Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-07T11:43:15.256Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-07-07T11:43:15.258Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-07-07T11:48:52.707Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-07T11:48:52.710Z  INFO 1 --- [AiCareerChatBot] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-07-07T11:48:52.731Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T11:48:52.734Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-07-07T11:48:52.738Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-07-07T11:50:55.478Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Starting AiCareerChatBotApplication v0.0.1-SNAPSHOT using Java 17.0.15 with PID 1 (/app/app.jar started by root in /app)
+2025-07-07T11:50:55.481Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : The following 1 profile is active: "prod"
+2025-07-07T11:50:56.459Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T11:50:56.461Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-07T11:50:56.602Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 130 ms. Found 1 JPA repository interface.
+2025-07-07T11:50:56.622Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T11:50:56.624Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-07-07T11:50:56.644Z  INFO 1 --- [AiCareerChatBot] [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface AiCareerChatBot.demo.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-07-07T11:50:56.645Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 Redis repository interfaces.
+2025-07-07T11:50:57.326Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-07-07T11:50:57.345Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-07-07T11:50:57.347Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-07T11:50:57.390Z  INFO 1 --- [AiCareerChatBot] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-07-07T11:50:57.391Z  INFO 1 --- [AiCareerChatBot] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1854 ms
+2025-07-07T11:50:57.600Z  INFO 1 --- [AiCareerChatBot] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-07T11:50:57.718Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-07T11:50:57.775Z  INFO 1 --- [AiCareerChatBot] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-07-07T11:50:58.048Z  INFO 1 --- [AiCareerChatBot] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-07T11:50:58.083Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-07-07T11:50:58.166Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@75452aea
+2025-07-07T11:50:58.168Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-07-07T11:50:58.196Z  WARN 1 --- [AiCareerChatBot] [main] org.hibernate.orm.deprecation            : HHH90000025: MariaDBDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-07T11:50:58.214Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 11.4.7
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-07T11:50:58.881Z  INFO 1 --- [AiCareerChatBot] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-07T11:50:58.914Z  INFO 1 --- [AiCareerChatBot] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T11:50:59.699Z  WARN 1 --- [AiCareerChatBot] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-07T11:50:59.996Z  WARN 1 --- [AiCareerChatBot] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: bd42b4b0-a1e7-4b3f-9f9d-0f333353ed7a
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2025-07-07T11:51:00.013Z  INFO 1 --- [AiCareerChatBot] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2025-07-07T11:51:00.720Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-07-07T11:51:00.756Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Started AiCareerChatBotApplication in 5.938 seconds (process running for 6.58)
+2025-07-07T11:51:35.223Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-07T11:51:35.224Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-07-07T11:51:35.226Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-07-07T11:54:07.569Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-07T11:54:07.573Z  INFO 1 --- [AiCareerChatBot] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-07-07T11:54:07.596Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T11:54:07.598Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-07-07T11:54:07.602Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-07-07T11:54:09.981Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Starting AiCareerChatBotApplication v0.0.1-SNAPSHOT using Java 17.0.15 with PID 1 (/app/app.jar started by root in /app)
+2025-07-07T11:54:09.984Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : The following 1 profile is active: "prod"
+2025-07-07T11:54:10.744Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T11:54:10.746Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-07T11:54:10.860Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 104 ms. Found 1 JPA repository interface.
+2025-07-07T11:54:10.879Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T11:54:10.880Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-07-07T11:54:10.894Z  INFO 1 --- [AiCareerChatBot] [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface AiCareerChatBot.demo.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-07-07T11:54:10.895Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 Redis repository interfaces.
+2025-07-07T11:54:11.529Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-07-07T11:54:11.543Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-07-07T11:54:11.544Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-07T11:54:11.574Z  INFO 1 --- [AiCareerChatBot] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-07-07T11:54:11.575Z  INFO 1 --- [AiCareerChatBot] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1554 ms
+2025-07-07T11:54:11.737Z  INFO 1 --- [AiCareerChatBot] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-07T11:54:11.819Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-07T11:54:11.873Z  INFO 1 --- [AiCareerChatBot] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-07-07T11:54:12.111Z  INFO 1 --- [AiCareerChatBot] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-07T11:54:12.134Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-07-07T11:54:12.202Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@763b0996
+2025-07-07T11:54:12.203Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-07-07T11:54:12.225Z  WARN 1 --- [AiCareerChatBot] [main] org.hibernate.orm.deprecation            : HHH90000025: MariaDBDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-07T11:54:12.241Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 11.4.7
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-07T11:54:12.812Z  INFO 1 --- [AiCareerChatBot] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-07T11:54:12.842Z  INFO 1 --- [AiCareerChatBot] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T11:54:13.505Z  WARN 1 --- [AiCareerChatBot] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-07T11:54:14.448Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-07-07T11:54:14.472Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Started AiCareerChatBotApplication in 4.991 seconds (process running for 5.479)
+2025-07-07T12:12:37.880Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-07T12:12:37.881Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-07-07T12:12:37.884Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2025-07-07T12:18:56.470Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-07T12:18:56.475Z  INFO 1 --- [AiCareerChatBot] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-07-07T12:18:56.509Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T12:18:56.513Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-07-07T12:18:56.517Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-07-07T12:18:58.982Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Starting AiCareerChatBotApplication v0.0.1-SNAPSHOT using Java 17.0.15 with PID 1 (/app/app.jar started by root in /app)
+2025-07-07T12:18:58.985Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : The following 1 profile is active: "prod"
+2025-07-07T12:18:59.763Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T12:18:59.765Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-07T12:18:59.896Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 122 ms. Found 1 JPA repository interface.
+2025-07-07T12:18:59.912Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T12:18:59.914Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-07-07T12:18:59.935Z  INFO 1 --- [AiCareerChatBot] [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface AiCareerChatBot.demo.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-07-07T12:18:59.935Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 Redis repository interfaces.
+2025-07-07T12:19:00.591Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-07-07T12:19:00.626Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-07-07T12:19:00.627Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-07T12:19:00.678Z  INFO 1 --- [AiCareerChatBot] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-07-07T12:19:00.679Z  INFO 1 --- [AiCareerChatBot] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1644 ms
+2025-07-07T12:19:00.874Z  INFO 1 --- [AiCareerChatBot] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-07T12:19:00.927Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-07T12:19:00.965Z  INFO 1 --- [AiCareerChatBot] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-07-07T12:19:01.191Z  INFO 1 --- [AiCareerChatBot] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-07T12:19:01.215Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-07-07T12:19:01.296Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@10745a02
+2025-07-07T12:19:01.298Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-07-07T12:19:01.321Z  WARN 1 --- [AiCareerChatBot] [main] org.hibernate.orm.deprecation            : HHH90000025: MariaDBDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-07T12:19:01.336Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 11.4.7
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-07T12:19:01.898Z  INFO 1 --- [AiCareerChatBot] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-07T12:19:01.935Z  INFO 1 --- [AiCareerChatBot] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T12:19:02.707Z  WARN 1 --- [AiCareerChatBot] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-07T12:19:03.589Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-07-07T12:19:03.621Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Started AiCareerChatBotApplication in 5.143 seconds (process running for 5.65)
+2025-07-07T12:19:37.667Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-07T12:19:37.668Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-07-07T12:19:37.670Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-07-07T12:19:37.711Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] A.demo.provider.JwtAuthenticationFilter  : [JwtFilter] Request URI: /auth/signup
+2025-07-07T12:19:37.712Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] A.demo.provider.JwtAuthenticationFilter  : [shouldSkipFilter] Checking path: '/auth/signup'
+2025-07-07T12:19:37.713Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] A.demo.provider.JwtAuthenticationFilter  : [shouldSkipFilter] Path '/auth/signup' did not match any excluded paths. Result: false
+2025-07-07T12:19:37.714Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] A.demo.provider.JwtAuthenticationFilter  : [JwtFilter] Processing filter for path: /auth/signup
+2025-07-07T12:22:18.601Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-07T12:22:18.603Z  INFO 1 --- [AiCareerChatBot] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-07-07T12:22:18.626Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T12:22:18.628Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-07-07T12:22:18.632Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-07-07T12:22:20.977Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Starting AiCareerChatBotApplication v0.0.1-SNAPSHOT using Java 17.0.15 with PID 1 (/app/app.jar started by root in /app)
+2025-07-07T12:22:20.981Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : The following 1 profile is active: "prod"
+2025-07-07T12:22:21.723Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T12:22:21.725Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-07T12:22:21.847Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 113 ms. Found 1 JPA repository interface.
+2025-07-07T12:22:21.862Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T12:22:21.864Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-07-07T12:22:21.877Z  INFO 1 --- [AiCareerChatBot] [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface AiCareerChatBot.demo.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-07-07T12:22:21.878Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 Redis repository interfaces.
+2025-07-07T12:22:22.467Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-07-07T12:22:22.482Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-07-07T12:22:22.483Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-07T12:22:22.518Z  INFO 1 --- [AiCareerChatBot] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-07-07T12:22:22.519Z  INFO 1 --- [AiCareerChatBot] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1490 ms
+2025-07-07T12:22:22.687Z  INFO 1 --- [AiCareerChatBot] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-07T12:22:22.760Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-07T12:22:22.807Z  INFO 1 --- [AiCareerChatBot] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-07-07T12:22:23.048Z  INFO 1 --- [AiCareerChatBot] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-07T12:22:23.073Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-07-07T12:22:23.147Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@10745a02
+2025-07-07T12:22:23.149Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-07-07T12:22:23.169Z  WARN 1 --- [AiCareerChatBot] [main] org.hibernate.orm.deprecation            : HHH90000025: MariaDBDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-07T12:22:23.183Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 11.4.7
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-07T12:22:23.703Z  INFO 1 --- [AiCareerChatBot] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-07T12:22:23.737Z  INFO 1 --- [AiCareerChatBot] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T12:22:24.441Z  WARN 1 --- [AiCareerChatBot] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-07T12:22:25.415Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-07-07T12:22:25.442Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Started AiCareerChatBotApplication in 4.956 seconds (process running for 5.387)
+2025-07-07T12:22:45.465Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-07T12:22:45.466Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-07-07T12:22:45.467Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-07-07T12:24:16.232Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-07T12:24:16.235Z  INFO 1 --- [AiCareerChatBot] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-07-07T12:24:16.257Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T12:24:16.259Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-07-07T12:24:16.262Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-07-07T12:24:18.688Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Starting AiCareerChatBotApplication v0.0.1-SNAPSHOT using Java 17.0.15 with PID 1 (/app/app.jar started by root in /app)
+2025-07-07T12:24:18.691Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : The following 1 profile is active: "prod"
+2025-07-07T12:24:19.479Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T12:24:19.481Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-07T12:24:19.611Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 120 ms. Found 1 JPA repository interface.
+2025-07-07T12:24:19.627Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T12:24:19.629Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-07-07T12:24:19.643Z  INFO 1 --- [AiCareerChatBot] [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface AiCareerChatBot.demo.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-07-07T12:24:19.643Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 4 ms. Found 0 Redis repository interfaces.
+2025-07-07T12:24:20.413Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-07-07T12:24:20.431Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-07-07T12:24:20.432Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-07T12:24:20.488Z  INFO 1 --- [AiCareerChatBot] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-07-07T12:24:20.492Z  INFO 1 --- [AiCareerChatBot] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1759 ms
+2025-07-07T12:24:20.689Z  INFO 1 --- [AiCareerChatBot] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-07T12:24:20.756Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-07T12:24:20.809Z  INFO 1 --- [AiCareerChatBot] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-07-07T12:24:21.108Z  INFO 1 --- [AiCareerChatBot] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-07T12:24:21.150Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-07-07T12:24:21.234Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@66ab924
+2025-07-07T12:24:21.236Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-07-07T12:24:21.264Z  WARN 1 --- [AiCareerChatBot] [main] org.hibernate.orm.deprecation            : HHH90000025: MariaDBDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-07T12:24:21.281Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 11.4.7
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-07T12:24:21.941Z  INFO 1 --- [AiCareerChatBot] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-07T12:24:21.976Z  INFO 1 --- [AiCareerChatBot] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T12:24:22.839Z  WARN 1 --- [AiCareerChatBot] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-07T12:24:23.836Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-07-07T12:24:23.859Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Started AiCareerChatBotApplication in 5.687 seconds (process running for 6.131)
+2025-07-07T12:24:52.037Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-07T12:24:52.038Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-07-07T12:24:52.039Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-07-07T12:28:18.134Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-07T12:28:18.137Z  INFO 1 --- [AiCareerChatBot] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-07-07T12:28:18.158Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T12:28:18.160Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-07-07T12:28:18.163Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-07-07T12:28:20.519Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Starting AiCareerChatBotApplication v0.0.1-SNAPSHOT using Java 17.0.15 with PID 1 (/app/app.jar started by root in /app)
+2025-07-07T12:28:20.522Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : The following 1 profile is active: "prod"
+2025-07-07T12:28:21.296Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T12:28:21.298Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-07T12:28:21.430Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 119 ms. Found 1 JPA repository interface.
+2025-07-07T12:28:21.445Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T12:28:21.446Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-07-07T12:28:21.459Z  INFO 1 --- [AiCareerChatBot] [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface AiCareerChatBot.demo.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-07-07T12:28:21.460Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 Redis repository interfaces.
+2025-07-07T12:28:22.127Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-07-07T12:28:22.149Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-07-07T12:28:22.150Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-07T12:28:22.204Z  INFO 1 --- [AiCareerChatBot] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-07-07T12:28:22.205Z  INFO 1 --- [AiCareerChatBot] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1641 ms
+2025-07-07T12:28:22.408Z  INFO 1 --- [AiCareerChatBot] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-07T12:28:22.485Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-07T12:28:22.526Z  INFO 1 --- [AiCareerChatBot] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-07-07T12:28:22.766Z  INFO 1 --- [AiCareerChatBot] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-07T12:28:22.791Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-07-07T12:28:22.865Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@68f776ee
+2025-07-07T12:28:22.867Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-07-07T12:28:22.893Z  WARN 1 --- [AiCareerChatBot] [main] org.hibernate.orm.deprecation            : HHH90000025: MariaDBDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-07T12:28:22.910Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 11.4.7
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-07T12:28:23.475Z  INFO 1 --- [AiCareerChatBot] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-07T12:28:23.509Z  INFO 1 --- [AiCareerChatBot] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T12:28:24.185Z  WARN 1 --- [AiCareerChatBot] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-07T12:28:25.107Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-07-07T12:28:25.134Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Started AiCareerChatBotApplication in 5.096 seconds (process running for 5.557)
+2025-07-07T12:28:46.783Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-07T12:28:46.784Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-07-07T12:28:46.786Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-07-07T12:30:33.833Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-07T12:30:33.838Z  INFO 1 --- [AiCareerChatBot] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-07-07T12:30:33.867Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T12:30:33.871Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-07-07T12:30:33.879Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-07-07T12:30:36.222Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Starting AiCareerChatBotApplication v0.0.1-SNAPSHOT using Java 17.0.15 with PID 1 (/app/app.jar started by root in /app)
+2025-07-07T12:30:36.226Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : The following 1 profile is active: "prod"
+2025-07-07T12:30:37.065Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T12:30:37.067Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-07T12:30:37.189Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 107 ms. Found 1 JPA repository interface.
+2025-07-07T12:30:37.205Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T12:30:37.206Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-07-07T12:30:37.219Z  INFO 1 --- [AiCareerChatBot] [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface AiCareerChatBot.demo.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-07-07T12:30:37.219Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 4 ms. Found 0 Redis repository interfaces.
+2025-07-07T12:30:37.876Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-07-07T12:30:37.889Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-07-07T12:30:37.890Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-07T12:30:37.926Z  INFO 1 --- [AiCareerChatBot] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-07-07T12:30:37.927Z  INFO 1 --- [AiCareerChatBot] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1655 ms
+2025-07-07T12:30:38.120Z  INFO 1 --- [AiCareerChatBot] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-07T12:30:38.206Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-07T12:30:38.262Z  INFO 1 --- [AiCareerChatBot] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-07-07T12:30:38.532Z  INFO 1 --- [AiCareerChatBot] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-07T12:30:38.565Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-07-07T12:30:38.646Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@6df2af02
+2025-07-07T12:30:38.647Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-07-07T12:30:38.674Z  WARN 1 --- [AiCareerChatBot] [main] org.hibernate.orm.deprecation            : HHH90000025: MariaDBDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-07T12:30:38.691Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 11.4.7
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-07T12:30:39.332Z  INFO 1 --- [AiCareerChatBot] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-07T12:30:39.370Z  INFO 1 --- [AiCareerChatBot] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T12:30:40.151Z  WARN 1 --- [AiCareerChatBot] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-07T12:30:41.172Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-07-07T12:30:41.197Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Started AiCareerChatBotApplication in 5.52 seconds (process running for 5.963)
+2025-07-07T12:30:53.478Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-07T12:30:53.479Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-07-07T12:30:53.482Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-07-07T12:32:23.427Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-07T12:32:23.432Z  INFO 1 --- [AiCareerChatBot] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-07-07T12:32:23.462Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T12:32:23.465Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-07-07T12:32:23.470Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-07-07T12:32:25.822Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Starting AiCareerChatBotApplication v0.0.1-SNAPSHOT using Java 17.0.15 with PID 1 (/app/app.jar started by root in /app)
+2025-07-07T12:32:25.825Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : The following 1 profile is active: "prod"
+2025-07-07T12:32:26.626Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T12:32:26.628Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-07T12:32:26.747Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 109 ms. Found 1 JPA repository interface.
+2025-07-07T12:32:26.762Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T12:32:26.764Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-07-07T12:32:26.777Z  INFO 1 --- [AiCareerChatBot] [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface AiCareerChatBot.demo.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-07-07T12:32:26.778Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 Redis repository interfaces.
+2025-07-07T12:32:27.320Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-07-07T12:32:27.332Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-07-07T12:32:27.333Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-07T12:32:27.378Z  INFO 1 --- [AiCareerChatBot] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-07-07T12:32:27.379Z  INFO 1 --- [AiCareerChatBot] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1503 ms
+2025-07-07T12:32:27.566Z  INFO 1 --- [AiCareerChatBot] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-07T12:32:27.632Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-07T12:32:27.678Z  INFO 1 --- [AiCareerChatBot] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-07-07T12:32:27.929Z  INFO 1 --- [AiCareerChatBot] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-07T12:32:27.954Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-07-07T12:32:28.026Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@3d798e76
+2025-07-07T12:32:28.028Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-07-07T12:32:28.052Z  WARN 1 --- [AiCareerChatBot] [main] org.hibernate.orm.deprecation            : HHH90000025: MariaDBDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-07T12:32:28.068Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 11.4.7
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-07T12:32:28.652Z  INFO 1 --- [AiCareerChatBot] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-07T12:32:28.687Z  INFO 1 --- [AiCareerChatBot] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T12:32:29.497Z  WARN 1 --- [AiCareerChatBot] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-07T12:32:30.673Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-07-07T12:32:30.692Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Started AiCareerChatBotApplication in 5.382 seconds (process running for 5.863)
+2025-07-07T12:32:39.290Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-07T12:32:39.291Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-07-07T12:32:39.292Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-07-07T12:35:00.665Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-07T12:35:00.669Z  INFO 1 --- [AiCareerChatBot] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-07-07T12:35:00.695Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T12:35:00.698Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-07-07T12:35:00.701Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-07-07T12:35:03.120Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Starting AiCareerChatBotApplication v0.0.1-SNAPSHOT using Java 17.0.15 with PID 1 (/app/app.jar started by root in /app)
+2025-07-07T12:35:03.123Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : The following 1 profile is active: "prod"
+2025-07-07T12:35:03.923Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T12:35:03.925Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-07T12:35:04.044Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 111 ms. Found 1 JPA repository interface.
+2025-07-07T12:35:04.060Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-07T12:35:04.061Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-07-07T12:35:04.074Z  INFO 1 --- [AiCareerChatBot] [main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface AiCareerChatBot.demo.repository.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2025-07-07T12:35:04.075Z  INFO 1 --- [AiCareerChatBot] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 Redis repository interfaces.
+2025-07-07T12:35:04.658Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-07-07T12:35:04.677Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-07-07T12:35:04.678Z  INFO 1 --- [AiCareerChatBot] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-07T12:35:04.712Z  INFO 1 --- [AiCareerChatBot] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-07-07T12:35:04.714Z  INFO 1 --- [AiCareerChatBot] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1546 ms
+2025-07-07T12:35:04.896Z  INFO 1 --- [AiCareerChatBot] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-07T12:35:04.963Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-07T12:35:05.013Z  INFO 1 --- [AiCareerChatBot] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-07-07T12:35:05.253Z  INFO 1 --- [AiCareerChatBot] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-07T12:35:05.276Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-07-07T12:35:05.349Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@68f776ee
+2025-07-07T12:35:05.351Z  INFO 1 --- [AiCareerChatBot] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-07-07T12:35:05.373Z  WARN 1 --- [AiCareerChatBot] [main] org.hibernate.orm.deprecation            : HHH90000025: MariaDBDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-07-07T12:35:05.388Z  INFO 1 --- [AiCareerChatBot] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 11.4.7
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-07T12:35:05.934Z  INFO 1 --- [AiCareerChatBot] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-07T12:35:05.970Z  INFO 1 --- [AiCareerChatBot] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T12:35:06.719Z  WARN 1 --- [AiCareerChatBot] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-07-07T12:35:07.649Z  INFO 1 --- [AiCareerChatBot] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-07-07T12:35:07.677Z  INFO 1 --- [AiCareerChatBot] [main] A.demo.AiCareerChatBotApplication        : Started AiCareerChatBotApplication in 5.084 seconds (process running for 5.539)
+2025-07-07T12:35:20.423Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-07T12:35:20.425Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-07-07T12:35:20.426Z  INFO 1 --- [AiCareerChatBot] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-07-07T12:39:31.084Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-07T12:39:31.088Z  INFO 1 --- [AiCareerChatBot] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-07-07T12:39:31.120Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-07T12:39:31.123Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-07-07T12:39:31.128Z  INFO 1 --- [AiCareerChatBot] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
