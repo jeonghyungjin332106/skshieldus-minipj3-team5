@@ -1,0 +1,21 @@
+/* src/index.css */
+
+/* --- 중요: react-toastify CSS 임포트를 가장 위로 이동 --- */
+@import 'react-toastify/dist/ReactToastify.css';
+/* ------------------------------------------------------- */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 스크롤바 완전히 투명화 (Webkit 브라우저용) */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}
