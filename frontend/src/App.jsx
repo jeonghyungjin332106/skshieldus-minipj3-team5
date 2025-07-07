@@ -1,77 +1,86 @@
 // src/App.jsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react'; // useState 임포트 추가 (다크모드 토글용)
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Header from './components/Header';
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+// ⭐️⭐️⭐️ RegisterPage 대신 SignupPage 임포트 ⭐️⭐️⭐️
+import SignupPage from './pages/SignupPage'; 
 import DashboardPage from './pages/DashboardPage';
-// --- 중요: ResumeAnalysisPage 임포트 경로 수정 확인 ---
-import ResumeAnalysisPage from './pages/ResumeAnalysisPage'; // "./pages/pages/ResumeAnalysisPage" -> "./pages/ResumeAnalysisPage"로 수정
-// ---------------------------------------------------
+import ResumeAnalysisPage from './pages/ResumeAnalysisPage';
 import InterviewQuestionsPage from './pages/InterviewQuestionsPage';
 import UserGuidePage from './pages/UserGuidePage';
 
-// --- react-toastify 임포트 확인 ---
 import { ToastContainer } from 'react-toastify';
-// ------------------------------------
+
 
 const PrivateRoute = ({ children }) => {
-  const { isLoggedIn } = useSelector((state) => state.auth);
-  return isLoggedIn ? children : <Navigate to="/login" replace />;
+    const { isLoggedIn } = useSelector((state) => state.auth);
+    console.log('PrivateRoute - isLoggedIn:', isLoggedIn);
+    return isLoggedIn ? children : <Navigate to="/login" replace />;
 };
 
 function App() {
-  const { isLoggedIn } = useSelector((state) => state.auth);
-  const { isDarkMode } = useSelector((state) => state.theme);
+    const { isLoggedIn } = useSelector((state) => state.auth);
+    // isDarkMode 상태는 App.jsx에서 직접 관리하거나, themeSlice에서 가져와야 합니다.
+    // 현재 themeSlice가 없으므로 App.jsx에서 직접 관리하는 예시를 보여드립니다.
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        const savedMode = localStorage.getItem('theme');
+        if (savedMode) {
+            return savedMode === 'dark';
+        }
+        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    });
 
-  // 다크 모드 상태에 따라 HTML 문서에 'dark' 클래스 토글
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [isDarkMode]);
+    // 다크 모드 상태에 따라 HTML 문서에 'dark' 클래스 토글
+    useEffect(() => {
+        if (isDarkMode) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light'); // localStorage에 저장
+    }, [isDarkMode]);
 
-  return (
-    <BrowserRouter>
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <main className="flex-grow">
-          <Routes>
-            {/* 로그인 및 회원가입 페이지 */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            {/* 사용자 가이드 페이지 */}
-            <Route path="/guide" element={<UserGuidePage />} />
+    // Header 컴포넌트에서 직접 다크 모드 토글 함수를 넘겨주지 않고,
+    // Header 내부에서 Redux themeSlice의 toggleDarkMode 액션을 디스패치하도록 변경했으므로,
+    // App.jsx에서는 isDarkMode 상태만 useSelector로 가져오고, toggleDarkMode 함수는 Header에서 직접 사용합니다.
+    // 만약 themeSlice가 없다면, Header.jsx에서 toggleDarkMode 관련 로직을 제거해야 합니다.
 
-            {/* 로그인된 사용자만 접근 가능한 페이지들 (PrivateRoute로 보호) */}
-            <Route path="/" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
-            <Route path="/resume-analysis" element={<PrivateRoute><ResumeAnalysisPage /></PrivateRoute>} />
-            <Route path="/interview-questions" element={<PrivateRoute><InterviewQuestionsPage /></PrivateRoute>} />
+    return (
+        <BrowserRouter>
+            <div className="flex flex-col min-h-screen">
+                {/* Header 컴포넌트는 이제 isDarkMode와 toggleDarkMode를 Redux에서 직접 가져옵니다. */}
+                <Header /> 
+                <main className="flex-grow">
+                    <Routes>
+                        <Route path="/login" element={<LoginPage />} />
+                        {/* ⭐️⭐️⭐️ /register -> /signup 경로 및 컴포넌트 변경 ⭐️⭐️⭐️ */}
+                        <Route path="/signup" element={<SignupPage />} /> 
+                        <Route path="/guide" element={<UserGuidePage />} />
 
-            {/* 정의되지 않은 모든 경로에 대한 Fallback 라우트 */}
-            <Route path="*" element={isLoggedIn ? <Navigate to="/" replace /> : <Navigate to="/login" replace />} />
-          </Routes>
-        </main>
-        {/* --- ToastContainer 설정 확인 --- */}
-        <ToastContainer
-          position="top-right" // 알림 위치
-          autoClose={3000} // 3초 후 자동 닫힘
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme={isDarkMode ? "dark" : "light"} // 다크 모드 테마 적용
-        />
-        {/* ---------------------------------- */}
-      </div>
-    </BrowserRouter>
-  );
+                        <Route path="/" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+                        <Route path="/resume-analysis" element={<PrivateRoute><ResumeAnalysisPage /></PrivateRoute>} />
+                        <Route path="/interview-questions" element={<PrivateRoute><InterviewQuestionsPage /></PrivateRoute>} />
+
+                        <Route path="*" element={isLoggedIn ? <Navigate to="/" replace /> : <Navigate to="/login" replace />} />
+                    </Routes>
+                </main>
+                <ToastContainer
+                    position="top-right"
+                    autoClose={3000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme={isDarkMode ? "dark" : "light"}
+                />
+            </div>
+        </BrowserRouter>
+    );
 }
 
 export default App;
