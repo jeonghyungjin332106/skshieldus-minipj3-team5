@@ -1,6 +1,7 @@
 // src/components/GeneratedQuestionsDisplay.jsx
 import React, { useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import LoadingSpinner from './LoadingSpinner'; // ⭐️ LoadingSpinner 컴포넌트 임포트 ⭐️
 
 function GeneratedQuestionsDisplay({ questions, isLoading, error, onFeedbackRequest }) {
   const [copiedQuestionId, setCopiedQuestionId] = useState(null);
@@ -10,11 +11,9 @@ function GeneratedQuestionsDisplay({ questions, isLoading, error, onFeedbackRequ
       // 로딩 중 컨테이너 배경 및 텍스트 색상 (다크 모드 적용)
       <div className="bg-white rounded-lg shadow-md p-6 text-center dark:bg-gray-700 dark:text-gray-100">
         <div className="flex justify-center items-center h-48">
-          {/* 스피너 색상 (다크 모드에서도 잘 보이도록 기존 색상 유지 또는 조정) */}
-          <svg className="animate-spin h-10 w-10 text-purple-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
+          {/* ⭐️⭐️⭐️ SVG 스피너 대신 LoadingSpinner 컴포넌트 사용 ⭐️⭐️⭐️ */}
+          <LoadingSpinner size="lg" color="purple" /> {/* h-10 w-10에 맞춰 'lg' 사이즈, 색상은 'purple' */}
+          {/* ---------------------------------------------------- */}
           {/* 로딩 메시지 텍스트 색상 (다크 모드 적용) */}
           <p className="ml-4 text-gray-700 text-lg dark:text-gray-300">면접 질문을 생성 중입니다...</p>
         </div>
@@ -28,7 +27,7 @@ function GeneratedQuestionsDisplay({ questions, isLoading, error, onFeedbackRequ
       <div className="bg-white rounded-lg shadow-md p-6 text-center text-red-600 dark:bg-red-900 dark:text-red-300">
         {/* 에러 메시지 텍스트 색상 */}
         <p className="text-lg font-semibold">{error}</p>
-        <p className="mt-2">{error}</p>
+        <p className="mt-2 text-sm">{error}</p> {/* error 메시지가 두 번 출력되므로 하나로 합치거나 명확화 */}
       </div>
     );
   }

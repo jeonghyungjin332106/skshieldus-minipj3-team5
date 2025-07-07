@@ -1,8 +1,8 @@
 // src/components/AnalysisResultDisplay.jsx
 import React from 'react';
-import LoadingSpinner from './LoadingSpinner';
+import LoadingSpinner from './LoadingSpinner'; // LoadingSpinner 컴포넌트 임포트
 
-function AnalysisResultDisplay({ analysisResults = null, isLoading = false }) {
+function AnalysisResultDisplay({ analysisResults = null, isLoading = false, error }) { // error prop도 명시적으로 받도록 추가
 
   if (isLoading) {
     return (
@@ -16,15 +16,27 @@ function AnalysisResultDisplay({ analysisResults = null, isLoading = false }) {
     );
   }
 
-  // analysisResults가 null이거나 비어있을 때 (아직 분석 결과가 없을 때)
-  if (!analysisResults) {
+  // ⭐️⭐️⭐️ 에러 메시지 표시 섹션 수정 ⭐️⭐️⭐️
+  if (error) { // error prop이 존재하면
+    return (
+      // 에러 컨테이너 배경 및 텍스트 색상 (다크 모드 적용)
+      <div className="bg-white rounded-lg shadow-md p-6 text-center text-red-600 dark:bg-red-900 dark:text-red-300">
+        {/* 에러 메시지를 한 번만, 명확하게 출력 */}
+        <p className="text-lg font-semibold mb-2">분석 오류가 발생했습니다.</p>
+        <p className="text-sm">{error}</p> {/* 실제 오류 내용은 작게 표시 */}
+      </div>
+    );
+  }
+  // ------------------------------------
+
+  if (!analysisResults) { // analysisResults가 null이거나 비어있을 때 (아직 분석 결과가 없을 때)
     return (
       // 초기 메시지 컨테이너 배경 및 텍스트 색상 (다크 모드 적용)
       <div className="bg-white rounded-lg shadow-md p-6 text-center dark:bg-gray-700 dark:text-gray-100">
         {/* 제목 텍스트 색상 */}
         <h2 className="text-2xl font-bold text-gray-800 mb-4 dark:text-gray-50">이력서 분석 결과</h2>
         {/* 설명 텍스트 색상 */}
-        <p className="text-gray-600 dark:text-gray-300">아직 분석된 이력서가 없습니다. 이력서를 업로드하여 분석을 시작하세요.</p>
+        <p className="text-gray-600 leading-relaxed dark:text-gray-300">아직 분석된 이력서가 없습니다. 이력서를 업로드하거나 직접 입력하여 분석을 시작하세요.</p>
         <p className="text-gray-500 text-sm mt-2 dark:text-gray-400">
           (PDF, Word 파일 또는 텍스트 직접 입력 가능)
         </p>
@@ -32,12 +44,12 @@ function AnalysisResultDisplay({ analysisResults = null, isLoading = false }) {
     );
   }
 
-  // 실제 분석 결과가 있을 때 (데모용 임시 구조)
+  // 실제 분석 결과가 있을 때
   return (
     // 결과 표시 컨테이너 배경 및 그림자 (다크 모드 적용)
     <div className="bg-white rounded-lg shadow-md p-6 dark:bg-gray-700">
       {/* 제목 텍스트 색상 (다크 모드 적용) */}
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 dark:text-gray-50">이력서 분석 결과</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center dark:text-gray-50">이력서 분석 결과</h2>
 
       {/* 1. 이력서 요약 섹션 */}
       <div className="mb-8">
