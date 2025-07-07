@@ -17,7 +17,7 @@ import { notifyError } from '../components/Notification';
 
 
 // 백엔드 API 기본 URL (데모 시뮬레이션에서는 직접 사용되지 않음)
-const BACKEND_API_BASE_URL = 'http://localhost:8080';
+const BACKEND_API_BASE_URL = '/api';
 
 function ResumeAnalysisPage() {
     const dispatch = useDispatch(); // Redux dispatch 훅을 사용하여 액션을 디스패치합니다.
