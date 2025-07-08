@@ -13,8 +13,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @CrossOrigin("http://localhost:3000")
 @RequiredArgsConstructor
 public class UserController {
@@ -23,14 +26,24 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserDto.SignUpRequest request) {
-        try {
-            UserDto.Response user = userService.createUser(request);
-            return new ResponseEntity<>(user, HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace(); // 서버 콘솔에 에러 출력
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("서버 에러: " + e.getMessage());
-        }
+        // --- [수정] try-catch 블록을 제거하여 예외가 GlobalExceptionHandler로 전달되도록 합니다. ---
+
+        // 1. 사용자 계정 생성
+        UserDto.Response userResponse = userService.createUser(request);
+
+        // 2. 생성된 계정으로 즉시 로그인하여 토큰 발급
+        UserDto.LoginRequest loginRequest = new UserDto.LoginRequest();
+        loginRequest.setLoginId(request.getLoginId());
+        loginRequest.setPassword(request.getPassword());
+        AuthService.LoginResponse loginResponse = authService.login(loginRequest);
+
+        // 3. 프론트엔드가 기대하는 형태로 응답 데이터 구성
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("user", userResponse);
+        responseBody.put("token", loginResponse.getAccessToken());
+        responseBody.put("refreshToken", loginResponse.getRefreshToken());
+
+        return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 
     // 로그인
@@ -44,13 +57,10 @@ public class UserController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request) {
         try {
-            // Authorization 헤더에서 토큰 추출
             String token = extractTokenFromRequest(request);
             if (token == null) {
                 return ResponseEntity.badRequest().body("Token is required");
             }
-
-            // 현재 사용자 ID 추출 (JWT에서)
             Long userId = getCurrentUserId();
             if (userId == null) {
                 return ResponseEntity.badRequest().body("Invalid user");
@@ -81,7 +91,6 @@ public class UserController {
         }
     }
 
-    // Authorization 헤더에서 토큰 추출
     private String extractTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
@@ -90,7 +99,6 @@ public class UserController {
         return null;
     }
 
-    // 현재 사용자 ID 추출 (SecurityContext에서)
     private Long getCurrentUserId() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -103,7 +111,6 @@ public class UserController {
         return null;
     }
 
-    // 토큰 갱신 요청 DTO
     @Data
     public static class TokenRefreshRequest {
         private String refreshToken;
