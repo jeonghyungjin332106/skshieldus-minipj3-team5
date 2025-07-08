@@ -33,7 +33,6 @@ public class ChatMessageDto {
         private String message;
         private LocalDateTime timestamp;
 
-        // ✅ 필요한 생성자 추가
         public Response(String message, boolean sender) {
             this.message = message;
             this.sender = sender;
