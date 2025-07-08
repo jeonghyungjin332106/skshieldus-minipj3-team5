@@ -26,30 +26,24 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserDto.SignUpRequest request) {
-        try {
-            // 1. 사용자 계정 생성
-            UserDto.Response userResponse = userService.createUser(request);
+        // --- [수정] try-catch 블록을 제거하여 예외가 GlobalExceptionHandler로 전달되도록 합니다. ---
 
-            // 2. 생성된 계정으로 즉시 로그인하여 토큰 발급
-            UserDto.LoginRequest loginRequest = new UserDto.LoginRequest();
-            loginRequest.setLoginId(request.getLoginId());
-            loginRequest.setPassword(request.getPassword()); // 요청에 포함된 비밀번호 사용
-            AuthService.LoginResponse loginResponse = authService.login(loginRequest);
+        // 1. 사용자 계정 생성
+        UserDto.Response userResponse = userService.createUser(request);
 
-            // 3. 프론트엔드가 기대하는 형태로 응답 데이터 구성
-            // { "user": { ... }, "token": "...", "refreshToken": "..." }
-            Map<String, Object> responseBody = new HashMap<>();
-            responseBody.put("user", userResponse);
-            responseBody.put("token", loginResponse.getAccessToken()); // 프론트의 `const { token, user }` 구조에 맞춤
-            responseBody.put("refreshToken", loginResponse.getRefreshToken());
+        // 2. 생성된 계정으로 즉시 로그인하여 토큰 발급
+        UserDto.LoginRequest loginRequest = new UserDto.LoginRequest();
+        loginRequest.setLoginId(request.getLoginId());
+        loginRequest.setPassword(request.getPassword());
+        AuthService.LoginResponse loginResponse = authService.login(loginRequest);
 
-            return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
+        // 3. 프론트엔드가 기대하는 형태로 응답 데이터 구성
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("user", userResponse);
+        responseBody.put("token", loginResponse.getAccessToken());
+        responseBody.put("refreshToken", loginResponse.getRefreshToken());
 
-        } catch (Exception e) {
-            e.printStackTrace(); // 서버 콘솔에 에러 출력
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("서버 에러: " + e.getMessage());
-        }
+        return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 
     // 로그인
