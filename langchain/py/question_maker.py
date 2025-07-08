@@ -187,7 +187,7 @@ class ResumeAnalyzer:
     def extract_company_and_position(self, resume_content: str) -> dict:
         """이력서에서 지원 회사명과 직무 추출"""
         template = """
-다음 이력서 내용에서 지원하려는 회사명과 직무를 찾아주세요.
+다음 이력서 내용에서 지원하려는 회사명, 직무, 그리고 신입/경력 여부를 찾아주세요.
 
 이력서 내용:
 {resume_content}
@@ -195,10 +195,12 @@ class ResumeAnalyzer:
 다음 형식으로 응답해주세요:
 회사명: [찾은 회사명 또는 "없음"]
 직무: [찾은 직무명 또는 "없음"]
+경력구분: [신입/경력/없음]
 
 찾는 기준:
 - 회사명: "지원회사", "지원기업", "OO회사 지원", "OO 입사지원" 등의 표현 근처
 - 직무: "지원직무", "희망직무", "지원분야", "포지션" 등의 표현 근처
+- 경력구분: 경력사항, 근무경험이 있으면 "경력", 없거나 신입 명시되면 "신입", 판단 불가하면 "없음"
 
 명시적으로 기재되지 않은 경우 "없음"으로 응답해주세요.
 """
@@ -212,21 +214,25 @@ class ResumeAnalyzer:
             # 결과 파싱
             company = "없음"
             position = "없음"
+            career_level = "없음"
             
             for line in result.split('\n'):
                 if line.startswith('회사명:'):
                     company = line.replace('회사명:', '').strip()
                 elif line.startswith('직무:'):
                     position = line.replace('직무:', '').strip()
+                elif line.startswith('경력구분:'):
+                    career_level = line.replace('경력구분:', '').strip()
             
             return {
                 "company": company if company != "없음" else "",
-                "position": position if position != "없음" else ""
+                "position": position if position != "없음" else "",
+                "career_level": career_level if career_level != "없음" else ""
             }
             
         except Exception as e:
             print(f"이력서 분석 오류: {str(e)}")
-            return {"company": "", "position": ""}
+            return {"company": "", "position": "", "career_level": ""}
 
 
 class InterviewQuestionGenerator:
@@ -244,12 +250,13 @@ class InterviewQuestionGenerator:
     def _create_prompt_template(self) -> ChatPromptTemplate:
         """프롬프트 템플릿 생성"""
         template = """
-당신은 {company_name}의 면접관입니다. 지원자의 이력서와 회사 정보를 바탕으로 
+당신은 {company_name}의 면접관입니다. {career_level} 지원자의 이력서와 회사 정보를 바탕으로 
 적절한 면접 질문을 생성해야 합니다.
 
 [지원 정보]
 - 회사명: {company_name}
 - 지원 직무: {position}
+- 경력 구분: {career_level}
 - 추가 요구사항: {prompt}
 
 [회사 웹사이트 정보]
@@ -258,25 +265,23 @@ class InterviewQuestionGenerator:
 [지원자 이력서]
 {resume_content}
 
-위 정보를 바탕으로 다음 카테고리별로 면접 질문을 생성해주세요:
+{career_level}에 맞는 면접 질문을 다음 카테고리별로 생성해주세요:
 
 ## 1. 기본 질문 (2-3개)
-- 자기소개, 지원동기 등 기본적인 질문
+{career_basic_guide}
 
 ## 2. 경험 기반 질문 (4-5개)
-- 이력서의 경험을 바탕으로 한 구체적인 질문
-- STAR 방법론을 활용할 수 있는 질문
+{career_experience_guide}
 
 ## 3. 회사 적합성 질문 (3-4개)
 - 회사 문화와 가치관에 대한 이해도 확인
 - 회사 정보를 바탕으로 한 맞춤형 질문
 
 ## 4. 직무 역량 질문 (3-4개)
-- 해당 직무에 필요한 전문 역량 확인
-- 실무 상황을 가정한 문제 해결 질문
+{career_skill_guide}
 
 ## 5. 상황 대응 질문 (2-3개)
-- 갈등 상황, 팀워크, 리더십 등 상황별 대응 능력
+{career_situation_guide}
 
 각 질문에는 다음을 포함해주세요:
 - **질문**: 명확하고 구체적인 질문 내용
@@ -288,19 +293,46 @@ class InterviewQuestionGenerator:
         
         return ChatPromptTemplate.from_template(template)
     
-    def generate_questions(self, company_name: str, position: str, prompt: str, 
-                         resume_content: str, company_website_info: str = "") -> str:
+    def _get_career_level_guides(self, career_level: str) -> dict:
+        """경력 구분에 따른 질문 가이드"""
+        if career_level == "신입":
+            return {
+                "career_basic_guide": "- 자기소개, 지원동기, 학업/프로젝트 경험 중심의 기본 질문",
+                "career_experience_guide": "- 학교 프로젝트, 인턴십, 동아리, 개인 프로젝트 경험을 바탕으로 한 질문\n- 학습 능력과 성장 가능성에 초점",
+                "career_skill_guide": "- 기초 이론 지식과 학습한 기술에 대한 이해도 확인\n- 실무 적용 가능성과 학습 의지 평가",
+                "career_situation_guide": "- 팀 프로젝트, 갈등 해결, 시간 관리 등 기본적인 상황 대응 능력\n- 학습하고 성장하려는 자세와 태도"
+            }
+        elif career_level == "경력":
+            return {
+                "career_basic_guide": "- 이직 동기, 커리어 목표, 현재까지의 성과를 중심으로 한 질문",
+                "career_experience_guide": "- 실무 경험과 구체적인 성과를 바탕으로 한 질문\n- STAR 방법론을 활용한 상세한 경험 탐색",
+                "career_skill_guide": "- 전문 기술 역량과 실무 적용 경험 확인\n- 문제 해결 능력과 기술적 깊이 평가",
+                "career_situation_guide": "- 리더십, 의사결정, 복잡한 문제 해결 등 고급 상황 대응 능력\n- 팀 관리, 프로젝트 리딩 경험"
+            }
+        else:  # 구분 없음 또는 기타
+            return {
+                "career_basic_guide": "- 자기소개, 지원동기 등 기본적인 질문",
+                "career_experience_guide": "- 이력서의 경험을 바탕으로 한 구체적인 질문\n- STAR 방법론을 활용할 수 있는 질문",
+                "career_skill_guide": "- 해당 직무에 필요한 전문 역량 확인\n- 실무 상황을 가정한 문제 해결 질문",
+                "career_situation_guide": "- 갈등 상황, 팀워크, 리더십 등 상황별 대응 능력"
+            }
+    
+    def generate_questions(self, company_name: str, position: str, career_level: str, 
+                         prompt: str, resume_content: str, company_website_info: str = "") -> str:
         """면접 질문 생성"""
         try:
             prompt_template = self._create_prompt_template()
+            career_guides = self._get_career_level_guides(career_level)
             chain = prompt_template | self.llm | StrOutputParser()
             
             result = chain.invoke({
                 "company_name": company_name,
                 "position": position,
+                "career_level": career_level,
                 "prompt": prompt,
                 "resume_content": resume_content,
-                "company_website_info": company_website_info or "회사 웹사이트 정보 없음"
+                "company_website_info": company_website_info or "회사 웹사이트 정보 없음",
+                **career_guides
             })
             
             return result
@@ -322,60 +354,96 @@ class InterviewQuestionInterface:
         self.analyzer = ResumeAnalyzer(self.api_key)
     
     def analyze_resume(self, resume_file):
-        """이력서 분석 및 회사명/직무 추출"""
+        """이력서 분석 및 회사명/직무/경력구분 추출"""
         if resume_file is None:
-            return "", "", "❌ 이력서 파일을 업로드해주세요."
+            return "", "", "", "❌ 이력서 파일을 업로드해주세요."
         
         try:
             # 이력서 내용 추출
             resume_content = DocumentProcessor.extract_text_from_uploaded_file(resume_file)
             
             if not resume_content.strip():
-                return "", "", "❌ 이력서에서 텍스트를 추출할 수 없습니다."
+                return "", "", "", "❌ 이력서에서 텍스트를 추출할 수 없습니다."
             
-            # 회사명과 직무 자동 추출
+            # 회사명, 직무, 경력구분 자동 추출
             extracted_info = self.analyzer.extract_company_and_position(resume_content)
             
             company = extracted_info.get("company", "")
             position = extracted_info.get("position", "")
+            career_level = extracted_info.get("career_level", "")
             
             # 분석 결과 메시지
-            if company and position:
-                message = f"✅ 자동 추출 완료!\n회사: {company}\n직무: {position}"
-            elif company:
-                message = f"⚠️ 회사명만 찾았습니다: {company}\n직무를 직접 입력해주세요."
-            elif position:
-                message = f"⚠️ 직무만 찾았습니다: {position}\n회사명을 직접 입력해주세요."
-            else:
-                message = "⚠️ 회사명과 직무를 찾을 수 없습니다.\n직접 입력해주세요."
+            found_items = []
+            if company:
+                found_items.append(f"회사: {company}")
+            if position:
+                found_items.append(f"직무: {position}")
+            if career_level:
+                found_items.append(f"경력구분: {career_level}")
             
-            return company, position, message
+            if found_items:
+                message = f"✅ 자동 추출 완료!\n" + "\n".join(found_items)
+                if len(found_items) < 3:
+                    message += "\n⚠️ 누락된 정보는 직접 입력해주세요."
+            else:
+                message = "⚠️ 회사명, 직무, 경력구분을 찾을 수 없습니다.\n직접 입력해주세요."
+            
+            return company, position, career_level, message
             
         except Exception as e:
             error_msg = f"❌ 이력서 분석 오류: {str(e)}"
-            return "", "", error_msg
+            return "", "", "", error_msg
     
-    def process_and_generate(self, company_name: str, position: str, 
+    def save_to_file(self, content: str, company_name: str, position: str, career_level: str) -> str:
+        """결과를 data 폴더에 txt 파일로 저장"""
+        try:
+            # data 폴더 생성
+            data_dir = "data"
+            os.makedirs(data_dir, exist_ok=True)
+            
+            # 파일명 생성 (한글 파일명 지원)
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            career_suffix = f"_{career_level}" if career_level else ""
+            filename = f"면접질문_{company_name}_{position}{career_suffix}_{timestamp}.txt"
+            
+            # 파일 경로
+            file_path = os.path.join(data_dir, filename)
+            
+            # 파일 저장
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            
+            return file_path
+            
+        except Exception as e:
+            print(f"파일 저장 오류: {str(e)}")
+            return ""
+    
+    def process_and_generate(self, company_name: str, position: str, career_level: str,
                            website_url: str, additional_prompt: str,
-                           resume_file, enable_crawling: bool = True) -> str:
+                           resume_file, enable_crawling: bool = True) -> Tuple[str, str]:
         """파일 처리 및 질문 생성"""
         try:
             # 입력 검증
             if not company_name.strip():
-                return "❌ 회사명을 입력해주세요."
+                return "❌ 회사명을 입력해주세요.", ""
             
             if not position.strip():
-                return "❌ 지원 직무를 입력해주세요."
+                return "❌ 지원 직무를 입력해주세요.", ""
             
             if resume_file is None:
-                return "❌ 이력서 파일을 업로드해주세요."
+                return "❌ 이력서 파일을 업로드해주세요.", ""
+            
+            # 경력 구분 기본값 설정
+            if not career_level.strip():
+                career_level = "구분없음"
             
             # 이력서 내용 추출
             print("📄 이력서 내용 추출 중...")
             resume_content = DocumentProcessor.extract_text_from_uploaded_file(resume_file)
             
             if not resume_content.strip():
-                return "❌ 이력서에서 텍스트를 추출할 수 없습니다."
+                return "❌ 이력서에서 텍스트를 추출할 수 없습니다.", ""
             
             # 회사 웹사이트 정보 수집
             company_website_info = ""
@@ -388,6 +456,7 @@ class InterviewQuestionInterface:
             questions = self.generator.generate_questions(
                 company_name=company_name,
                 position=position,
+                career_level=career_level,
                 prompt=additional_prompt or "특별한 요구사항 없음",
                 resume_content=resume_content,
                 company_website_info=company_website_info
@@ -399,6 +468,7 @@ class InterviewQuestionInterface:
 ## 📋 생성 정보
 - **회사명**: {company_name}
 - **지원 직무**: {position}
+- **경력 구분**: {career_level}
 - **생성 시간**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 - **웹사이트 분석**: {'활성화' if enable_crawling and website_url else '비활성화'}
 
@@ -417,13 +487,19 @@ class InterviewQuestionInterface:
 **면접 화이팅! 🚀**
 """
             
-            return result
+            # 파일 저장
+            saved_path = self.save_to_file(result, company_name, position, career_level)
+            download_info = f"\n\n📁 **파일 저장됨**: `{saved_path}`" if saved_path else ""
+            
+            return result + download_info, saved_path
             
         except Exception as e:
             error_msg = f"❌ 처리 중 오류가 발생했습니다: {str(e)}"
             print(error_msg)
-            return error_msg
+            return error_msg, ""
     
+    # question_maker.py의 create_interface 메서드에서 download_info 부분만 수정
+
     def create_interface(self):
         """Gradio 인터페이스 생성"""
         with gr.Blocks(title="AI 면접 질문 생성기", theme=gr.themes.Soft()) as demo:
@@ -467,6 +543,12 @@ class InterviewQuestionInterface:
                         placeholder="예: 프론트엔드 개발자, 마케팅 매니저... (이력서에서 자동 추출 가능)"
                     )
                     
+                    career_level = gr.Dropdown(
+                        label="👔 경력 구분",
+                        choices=["신입", "경력", "구분없음"],
+                        value="구분없음"
+                    )
+                    
                     website_url = gr.Textbox(
                         label="🌐 회사 웹사이트 URL (선택사항)",
                         placeholder="https://www.company.com (회사 인재상 분석용)"
@@ -497,61 +579,14 @@ class InterviewQuestionInterface:
                         value="왼쪽에서 정보를 입력하고 '면접 질문 생성하기' 버튼을 클릭하세요.",
                         height=600
                     )
-            
-            with gr.Accordion("💡 사용 가이드", open=False):
-                gr.Markdown("""
-                ### 📋 사용 순서
-                1. **이력서 업로드**: PDF, DOCX, TXT 파일을 업로드하세요
-                2. **이력서 분석**: '🔍 이력서 분석하기' 버튼으로 회사명/직무 자동 추출
-                3. **정보 확인/수정**: 자동 추출된 정보를 확인하고 필요시 수정
-                4. **질문 생성**: '🚀 면접 질문 생성하기' 버튼을 클릭
-                
-                ### 💡 자동 추출 기능
-                - 이력서에서 "지원회사", "희망직무" 등의 정보를 자동으로 찾아줍니다
-                - 추출되지 않은 정보는 직접 입력하시면 됩니다
-                - 추출된 정보는 수정 가능합니다
-                
-                ### 입력 예시
-                - **이력서 내용**: "삼성전자 프론트엔드 개발자 지원"
-                - **자동 추출**: 회사명(삼성전자), 직무(프론트엔드 개발자)
-                - **웹사이트**: https://www.samsung.com
-                - **추가 요구사항**: 신입 개발자, React 경험 중시
-                """)
-            
-            # 예시 섹션
-            with gr.Accordion("📝 이력서 작성 팁", open=False):
-                gr.Markdown("""
-                ### 자동 추출을 위한 이력서 작성 팁
-                
-                **명시적으로 기재하면 더 정확합니다:**
-                - ✅ "지원회사: 네이버"
-                - ✅ "지원직무: 백엔드 개발자"
-                - ✅ "희망포지션: 마케팅 매니저"
-                
-                **이런 표현들도 인식합니다:**
-                - "OO회사 입사지원서"
-                - "OO 지원동기"
-                - "희망분야: 데이터 분석"
-                - "지원분야: AI 엔지니어"
-                """)
-            
-            # 기존 예시 섹션
-            with gr.Accordion("🎯 생성 결과 예시", open=False):
-                gr.Markdown("""
-                ### 입력 예시
-                - **회사명**: 네이버
-                - **지원 직무**: 프론트엔드 개발자
-                - **웹사이트**: https://www.navercorp.com
-                - **추가 요구사항**: 신입 개발자, React 경험 중시
-                - **이력서**: 본인의 이력서 파일 업로드
-                
-                ### 생성되는 질문 유형
-                1. **기본 질문**: 자기소개, 지원동기
-                2. **경험 기반**: 프로젝트 경험, 기술 스택
-                3. **회사 적합성**: 네이버 문화, 가치관 부합도
-                4. **직무 역량**: React 기술력, 프론트엔드 전문성
-                5. **상황 대응**: 팀워크, 문제 해결 능력
-                """)
+                    
+                    # 파일 다운로드 정보 - 여기가 핵심!
+                    download_info = gr.Textbox(
+                        label="📁 파일 저장 정보",
+                        value="질문 생성 후 data 폴더에 자동 저장됩니다.",
+                        interactive=False,
+                        visible=False
+                    )
             
             # 이벤트 연결
             
@@ -559,24 +594,37 @@ class InterviewQuestionInterface:
             analyze_btn.click(
                 fn=self.analyze_resume,
                 inputs=resume_file,
-                outputs=[company_name, position, analysis_result]
+                outputs=[company_name, position, career_level, analysis_result]
             ).then(
                 fn=lambda: gr.update(visible=True),
                 outputs=analysis_result
             )
             
-            # 질문 생성 버튼
+            # 질문 생성 버튼  
+            def generate_and_show_result(company_name, position, career_level, website_url, additional_prompt, resume_file, enable_crawling):
+                result, saved_path = self.process_and_generate(
+                    company_name, position, career_level, website_url, additional_prompt, resume_file, enable_crawling
+                )
+                
+                # 파일 저장 정보 업데이트
+                if saved_path:
+                    download_msg = f"✅ 파일이 저장되었습니다: {saved_path}"
+                    return result, gr.update(value=download_msg, visible=True)
+                else:
+                    return result, gr.update(visible=False)
+            
             generate_btn.click(
-                fn=self.process_and_generate,
+                fn=generate_and_show_result,
                 inputs=[
                     company_name, 
-                    position, 
+                    position,
+                    career_level,
                     website_url, 
                     additional_prompt,
                     resume_file, 
                     enable_crawling
                 ],
-                outputs=output
+                outputs=[output, download_info]  # 여기서 download_info 사용
             )
             
             # 파일 업로드 시 자동 분석 옵션

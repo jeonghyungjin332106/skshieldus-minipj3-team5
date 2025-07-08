@@ -22,11 +22,20 @@ public class ChatController {
     private final ChatService chatService;
 
     @PostMapping("/send")
-    public ResponseEntity<Void> saveChat(@RequestBody @Valid ChatMessageDto.Request dto) {
+    public ResponseEntity<ChatMessageDto.Response> saveChat(@RequestBody @Valid ChatMessageDto.Request dto) {
         Long userId = getCurrentUserId();
-        chatService.saveChatMessage(userId, dto.getMessage(), dto.isSender());
 
-        return ResponseEntity.ok().build();
+        // 1. 사용자 메시지 저장 (isSender=true)
+        chatService.saveChatMessage(userId, dto.getMessage(), true);
+
+        // 2. AI 응답 생성 요청
+        String aiResponse = chatService.getAIResponse(dto.getMessage());
+
+        // 3. AI 응답 저장 (isSender=false)
+        chatService.saveChatMessage(userId, aiResponse, false);
+
+        // 4. 프론트로 응답 반환
+        return ResponseEntity.ok(new ChatMessageDto.Response(aiResponse, false));
     }
 
     @GetMapping("/history")

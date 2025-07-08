@@ -28,12 +28,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final AuthService authService;
 
-    // 인증을 건너뛸 경로들
+    // --- [수정된 부분] ---
+    // Nginx 프록시를 거쳐 백엔드가 실제로 받는 경로를 기준으로 /api 접두사를 제거합니다.
     private static final List<String> EXCLUDED_PATHS = Arrays.asList(
-            "/api/auth/login",
-            "/api/auth/signup",
-            "/api/auth/refresh",
-            "/h2-console"
+            "/auth/login",
+            "/auth/signup",
+            "/auth/refresh",
+            "/h2-console/"
     );
 
     @Override
@@ -41,64 +42,42 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        try {
-            // 1. 제외 경로 확인
-            if (shouldSkipFilter(request)) {
-                filterChain.doFilter(request, response);
-                return;
-            }
+        if (shouldSkipFilter(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-            // 2. 요청에서 JWT 토큰 추출
+        try {
             String jwt = getTokenFromRequest(request);
 
-            // 3. 토큰이 있고 유효한 경우 인증 처리
             if (StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)) {
 
-                // 4. 토큰이 블랙리스트에 있는지 확인
                 if (authService.isTokenBlacklisted(jwt)) {
-                    log.warn("블랙리스트에 등록된 토큰으로 접근 시도: {}", jwt.substring(0, 20) + "...");
+                    log.warn("Attempted access with blacklisted token.");
+                    SecurityContextHolder.clearContext();
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("로그아웃된 토큰입니다.");
+                    response.getWriter().write("{\"error\":\"Invalid Token\",\"message\":\"로그아웃 처리된 토큰입니다.\"}");
                     return;
                 }
 
-                // 5. 토큰에서 사용자 정보 추출
                 String userId = jwtProvider.getUserIdFromToken(jwt);
                 String role = jwtProvider.getRoleFromToken(jwt);
-
-                // 6. 권한 객체 생성 (ROLE_ 접두사 확인 후 추가)
                 String authority = role.startsWith("ROLE_") ? role : "ROLE_" + role;
                 SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(authority);
 
-                // 7. 인증 객체 생성
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userId, // principal에 userId 저장
-                                null, // credentials는 null (이미 검증됨)
-                                Collections.singletonList(grantedAuthority) // JWT에서 추출한 권한 정보
-                        );
-
-                // 8. 요청 세부정보 설정
+                        new UsernamePasswordAuthenticationToken(userId, null, Collections.singletonList(grantedAuthority));
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                // 9. SecurityContext에 인증 정보 설정
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                log.debug("사용자 인증 완료: userId={}, role={}", userId, authority);
             }
-
         } catch (Exception e) {
-            log.error("JWT 인증 처리 중 오류 발생: {}", e.getMessage());
+            log.error("Could not set user authentication in security context", e);
             SecurityContextHolder.clearContext();
         }
 
-        // 10. 다음 필터로 요청 전달
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * HTTP 요청에서 JWT 토큰 추출
-     */
     private String getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
@@ -108,10 +87,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * 필터를 건너뛸지 결정
+     * 필터를 건너뛸지 결정하는 메소드
      */
     private boolean shouldSkipFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return EXCLUDED_PATHS.stream().anyMatch(path::startsWith);
+        return EXCLUDED_PATHS.stream().anyMatch(excludedPath ->
+            excludedPath.endsWith("/") ? path.startsWith(excludedPath) : path.equals(excludedPath)
+        );
     }
 }
