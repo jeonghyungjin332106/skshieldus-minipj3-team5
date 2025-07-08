@@ -1,7 +1,7 @@
-// src/components/QuestionGenerationControls.jsx
 import React, { useState } from 'react';
 import { Upload, X, Settings, ChevronDown, ChevronUp } from 'lucide-react';
-import LoadingSpinner from './LoadingSpinner'; // ⭐️ LoadingSpinner 임포트 ⭐️
+import { notifyError } from './Notification';
+import LoadingSpinner from './LoadingSpinner';
 
 function QuestionGenerationControls({ onGenerate, isLoading }) {
     const [companyName, setCompanyName] = useState('');
@@ -16,35 +16,35 @@ function QuestionGenerationControls({ onGenerate, isLoading }) {
 
     const handleFileChange = (e) => {
         const file = e.target.files?.[0];
-        if (file) {
-            const allowedTypes = [
-                'application/pdf',
-                'application/msword',
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                'text/plain'
-            ];
-            if (!allowedTypes.includes(file.type)) {
-                setFileError('PDF, Word (.doc, .docx), TXT 파일만 업로드할 수 있습니다.');
-                setSelectedFile(null);
-                return;
-            }
-            setFileError('');
-            setSelectedFile(file);
-        } else {
+        if (!file) return;
+
+        const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
+        if (!allowedTypes.includes(file.type)) {
+            const errorMsg = 'PDF, Word (.doc, .docx), TXT 파일만 업로드할 수 있습니다.';
+            setFileError(errorMsg);
+            notifyError(errorMsg);
             setSelectedFile(null);
+            e.target.value = '';
+            return;
         }
+        setFileError('');
+        setSelectedFile(file);
     };
 
     const handleClearFile = () => {
         setSelectedFile(null);
         setFileError('');
         const fileInput = document.getElementById('resume-file-upload-qgc');
-        if (fileInput) {
-            fileInput.value = '';
-        }
+        if (fileInput) fileInput.value = '';
     };
 
     const handleSubmit = () => {
+        if (!companyName && !selectedFile) {
+            notifyError('회사 이름을 입력하거나 이력서 파일을 첨부해주세요.');
+            return;
+        }
+        if (isLoading) return;
+
         onGenerate({
             companyName,
             interviewType,
@@ -55,172 +55,156 @@ function QuestionGenerationControls({ onGenerate, isLoading }) {
         });
     };
 
-    const toggleAdvancedSettings = () => {
-        setShowAdvancedSettings(!showAdvancedSettings);
-    };
-
     return (
-        <div className="bg-white rounded-lg shadow-md p-6 dark:bg-gray-700">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center dark:text-gray-50">면접 예상 질문 도출</h2>
+        <aside className="w-full md:w-96 h-full flex-shrink-0 bg-white p-6 rounded-2xl shadow-lg border border-gray-200 flex flex-col dark:bg-gray-800 dark:border-gray-700">
+            <h2 className="text-xl font-bold text-gray-800 text-center dark:text-gray-50 mb-4 flex-shrink-0">
+                면접 질문 생성 설정
+            </h2>
 
-            <div className="mb-4">
-                <label htmlFor="company-name" className="block text-gray-700 text-sm font-bold mb-2 dark:text-gray-300">
-                    회사 이름 (선택 사항)
-                </label>
-                <input
-                    type="text"
-                    id="company-name"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-600 dark:border-gray-500 dark:text-gray-100"
-                    placeholder="면접 볼 회사 이름을 입력하세요 (예: Google, 삼성전자)"
-                    value={companyName}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                    disabled={isLoading}
-                />
-            </div>
-
-            <div className="mb-4">
-                <label htmlFor="interview-type" className="block text-gray-700 text-sm font-bold mb-2 dark:text-gray-300">
-                    면접 유형
-                </label>
-                <select
-                    id="interview-type"
-                    className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-white dark:bg-gray-600 dark:border-gray-500 dark:text-gray-100"
-                    value={interviewType}
-                    onChange={(e) => setInterviewType(e.target.value)}
-                    disabled={isLoading}
-                >
-                    <option value="general">종합 면접 질문</option>
-                    <option value="technical">기술 면접 질문만</option>
-                    <option value="behavioral">인성 면접 질문만</option>
-                </select>
-            </div>
-
-            <div className="mb-6">
-                <label className="block text-gray-700 text-sm font-bold mb-2 dark:text-gray-300" htmlFor="resume-file-upload-qgc">
-                    이력서 파일 첨부 (선택 사항 - PDF, Word, TXT)
-                </label>
-                <label htmlFor="resume-file-upload-qgc" className="flex items-center justify-center px-4 py-3 border-2 border-dashed border-blue-300 rounded-lg cursor-pointer bg-blue-50 hover:bg-blue-100 transition-colors duration-200 text-blue-700
-                                                                        dark:bg-blue-900 dark:border-blue-700 dark:text-blue-200 dark:hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <Upload size={20} className="mr-2" />
-                    {selectedFile ? selectedFile.name : '파일 선택 (PDF, DOCX, TXT)'}
+            <div className="flex-grow overflow-y-auto pr-2 -mr-2 space-y-6">
+                <div className="border-b border-gray-200 dark:border-gray-700 pb-6">
+                    <label htmlFor="company-name" className="block text-gray-700 text-sm font-bold mb-2 dark:text-gray-300">
+                        1. 회사 이름
+                    </label>
                     <input
-                        id="resume-file-upload-qgc"
-                        type="file"
-                        accept=".pdf,.doc,.docx,.txt"
-                        onChange={handleFileChange}
-                        className="sr-only"
+                        type="text"
+                        id="company-name"
+                        className="w-full shadow-sm appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:border-gray-600 dark:text-gray-200 dark:focus:ring-blue-600 dark:focus:border-blue-600"
+                        placeholder="예: 네이버, 카카오"
+                        value={companyName}
+                        onChange={(e) => setCompanyName(e.target.value)}
                         disabled={isLoading}
                     />
-                </label>
-                {selectedFile && (
-                    <div className="flex items-center justify-between bg-blue-100 text-blue-800 px-4 py-2 rounded-md text-sm mt-2
-                                    dark:bg-blue-800 dark:text-blue-200">
-                        <span>{selectedFile.name}</span>
-                        <button onClick={handleClearFile} className="text-blue-600 hover:text-blue-800 ml-2 dark:text-blue-300 dark:hover:text-blue-100">
-                            <X size={16} />
-                        </button>
-                    </div>
-                )}
-                {fileError && (
-                    <p className="text-sm text-red-500 mt-2 dark:text-red-300">{fileError}</p>
-                )}
+                    <label htmlFor="interview-type" className="block text-gray-700 text-sm font-bold mt-4 mb-2 dark:text-gray-300">
+                        2. 면접 유형
+                    </label>
+                    <select
+                        id="interview-type"
+                        className="w-full shadow-sm appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-900 dark:border-gray-600 dark:text-gray-200 dark:focus:ring-blue-600 dark:focus:border-blue-600"
+                        value={interviewType}
+                        onChange={(e) => setInterviewType(e.target.value)}
+                        disabled={isLoading}
+                    >
+                        <option value="general">종합 면접</option>
+                        <option value="technical">기술 면접</option>
+                        <option value="behavioral">인성/행동 면접</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label className="block text-gray-700 text-sm font-bold mb-2 dark:text-gray-300">
+                        3. 이력서 첨부 (선택 사항)
+                    </label>
+                    <label 
+                        htmlFor="resume-file-upload-qgc"
+                        className={`flex items-center justify-center p-4 border-2 border-dashed rounded-lg cursor-pointer transition-colors duration-200 
+                                    ${isLoading ? 'bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed' 
+                                               : 'bg-gray-50 text-gray-500 border-gray-300 hover:bg-gray-100 hover:border-gray-400'}
+                                    dark:bg-gray-700/50 dark:border-gray-600 dark:text-gray-400 
+                                    ${!isLoading && 'dark:hover:bg-gray-700 dark:hover:border-gray-500'}`}
+                    >
+                        <Upload size={20} className="mr-2" />
+                        <span className="truncate">{selectedFile ? selectedFile.name : '파일 선택 (PDF, DOCX, TXT)'}</span>
+                        <input
+                            id="resume-file-upload-qgc"
+                            type="file"
+                            accept=".pdf,.doc,.docx,.txt"
+                            onChange={handleFileChange}
+                            className="sr-only"
+                            disabled={isLoading}
+                        />
+                    </label>
+                    {selectedFile && (
+                        <div className="flex items-center justify-between bg-gray-100 text-gray-800 px-3 py-1.5 rounded-md text-sm mt-2 dark:bg-gray-700 dark:text-gray-200">
+                            <span className="truncate">{selectedFile.name}</span>
+                            <button onClick={handleClearFile} disabled={isLoading} className="text-gray-500 hover:text-gray-700 ml-2 dark:text-gray-400 dark:hover:text-gray-200 disabled:opacity-50">
+                                <X size={16} />
+                            </button>
+                        </div>
+                    )}
+                    {fileError && <p className="text-sm text-red-500 mt-2 dark:text-red-400">{fileError}</p>}
+                </div>
             </div>
 
-            {/* 고급 설정 (Accordion) */}
-            <div className="w-full mt-6 border-t pt-6 border-gray-200 dark:border-gray-600">
+            <div className="w-full mt-4 border-t border-gray-200 dark:border-gray-700 pt-4 flex-shrink-0">
                 <button
-                    onClick={toggleAdvancedSettings}
-                    className="w-full flex justify-between items-center text-lg font-bold text-gray-800 hover:text-blue-600 transition-colors duration-200
-                               dark:text-gray-50 dark:hover:text-blue-400"
+                    onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
+                    className="w-full flex justify-between items-center font-bold text-gray-700 hover:text-black transition-colors duration-200 dark:text-gray-200 dark:hover:text-white"
                     disabled={isLoading}
                 >
-                    <span className="flex items-center">
-                        <Settings size={20} className="mr-2" /> 고급 설정
+                    <span className="flex items-center text-md">
+                        <Settings size={18} className="mr-2" /> 고급 설정
                     </span>
                     {showAdvancedSettings ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                 </button>
                 {showAdvancedSettings && (
-                    <div className="mt-4 space-y-4 text-gray-700 p-4 bg-blue-50 rounded-lg shadow-inner border border-blue-200
-                                    dark:bg-blue-900 dark:border-blue-700 dark:text-gray-100">
+                    <div className="mt-4 space-y-4 p-4 bg-gray-50 rounded-lg dark:bg-gray-700/50">
                         <div>
-                            <label htmlFor="chunkSize-qgc" className="block text-sm font-medium text-blue-700 mb-1 dark:text-blue-200">
+                            <label htmlFor="chunkSize-qgc" className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
                                 청크 크기: {chunkSize}
                             </label>
                             <input
                                 id="chunkSize-qgc"
-                                type="range"
-                                min="100"
-                                max="2000"
-                                step="50"
+                                type="range" min="100" max="2000" step="50"
                                 value={chunkSize}
                                 onChange={(e) => setChunkSize(Number(e.target.value))}
-                                className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-600
-                                           dark:bg-blue-700 dark:accent-blue-400"
-                                title="텍스트를 나누는 단위 (500-2000 권장)"
+                                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600 dark:bg-gray-600 dark:accent-blue-500"
                                 disabled={isLoading}
+                                title="AI가 한 번에 읽고 처리할 글자 수를 조절합니다. 값이 클수록 넓은 맥락을 파악하지만, 세부 정보는 놓칠 수 있습니다."
                             />
-                            <p className="text-xs text-blue-600 mt-1 dark:text-blue-300">텍스트를 나누는 단위 (500-2000 권장)</p>
+                            <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">AI가 한 번에 읽는 글자 수 (권장: 500-1500)</p>
                         </div>
                         <div>
-                            <label htmlFor="chunkOverlap-qgc" className="block text-sm font-medium text-blue-700 mb-1 dark:text-blue-200">
+                            <label htmlFor="chunkOverlap-qgc" className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
                                 청크 중복: {chunkOverlap}
                             </label>
                             <input
                                 id="chunkOverlap-qgc"
-                                type="range"
-                                min="0"
-                                max="500"
-                                step="10"
+                                type="range" min="0" max="500" step="10"
                                 value={chunkOverlap}
                                 onChange={(e) => setChunkOverlap(Number(e.target.value))}
-                                className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-600
-                                           dark:bg-blue-700 dark:accent-blue-400"
-                                title="청크 간 중복되는 문자 수 (50-300 권장)"
+                                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600 dark:bg-gray-600 dark:accent-blue-500"
                                 disabled={isLoading}
+                                title="나누어진 텍스트 조각(청크)들이 서로 겹치는 글자 수입니다. 문맥 연결을 부드럽게 합니다."
                             />
-                            <p className="text-xs text-blue-600 mt-1 dark:text-blue-300">청크 간 중복되는 문자 수 (50-300 권장)</p>
+                            <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">문맥 연결을 위한 겹치는 글자 수 (권장: 50-200)</p>
                         </div>
                         <div>
-                            <label htmlFor="temperature-qgc" className="block text-sm font-medium text-blue-700 mb-1 dark:text-blue-200">
+                            <label htmlFor="temperature-qgc" className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
                                 창의성 수준: {temperature.toFixed(1)}
                             </label>
                             <input
                                 id="temperature-qgc"
-                                type="range"
-                                min="0"
-                                max="1"
-                                step="0.1"
+                                type="range" min="0" max="1" step="0.1"
                                 value={temperature}
                                 onChange={(e) => setTemperature(Number(e.target.value))}
-                                className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-600
-                                           dark:bg-blue-700 dark:accent-blue-400"
-                                title="0: 정확성 우선, 1: 창의성 우선"
+                                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600 dark:bg-gray-600 dark:accent-blue-500"
                                 disabled={isLoading}
+                                title="0에 가까울수록 사실 기반의 답변을, 1에 가까울수록 다양하고 창의적인 답변을 생성합니다."
                             />
-                            <p className="text-xs text-blue-600 mt-1 dark:text-blue-300">0: 정확성 우선, 1: 창의성 우선</p>
+                            <p className="text-xs text-gray-500 mt-1 dark:text-gray-400">0: 정확성 우선, 1: 창의성 우선</p>
                         </div>
                     </div>
                 )}
             </div>
-
-            {/* 질문 생성 버튼 */}
-            <button
-                onClick={handleSubmit}
-                className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-md w-full transition-colors duration-300 mt-6 dark:bg-purple-700 dark:hover:bg-purple-800 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={isLoading}
-            >
-                {/* ⭐️⭐️⭐️ 로딩 스피너 적용 ⭐️⭐️⭐️ */}
-                {isLoading ? (
-                    <span className="flex items-center justify-center">
-                        <LoadingSpinner size="sm" color="white" /> {/* 버튼 내부이므로 sm 사이즈, 흰색 */}
-                        <span className="ml-2">질문 생성 중...</span>
-                    </span>
-                ) : (
-                    '면접 질문 생성 시작'
-                )}
-                {/* --------------------------- */}
-            </button>
-        </div>
+            
+            <div className="mt-auto pt-4 flex-shrink-0">
+                <button
+                    onClick={handleSubmit}
+                    className="w-full font-bold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed dark:disabled:bg-blue-800"
+                    disabled={isLoading}
+                >
+                    {isLoading ? (
+                        <>
+                            <LoadingSpinner size="sm" color="white" />
+                            <span className="ml-2">질문 생성 중...</span>
+                        </>
+                    ) : (
+                        '면접 질문 생성하기'
+                    )}
+                </button>
+            </div>
+        </aside>
     );
 }
 
