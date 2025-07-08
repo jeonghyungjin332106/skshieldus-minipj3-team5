@@ -2,7 +2,6 @@ package AiCareerChatBot.demo.dto;
 
 import AiCareerChatBot.demo.entity.ChatMessage;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +33,13 @@ public class ChatMessageDto {
         private String message;
         private LocalDateTime timestamp;
 
-        public static Response fromEntity(ChatMessage chatMessage){
+        public Response(String message, boolean sender) {
+            this.message = message;
+            this.sender = sender;
+            this.timestamp = LocalDateTime.now(); // 기본 현재시간 설정
+        }
+
+        public static Response fromEntity(ChatMessage chatMessage) {
             return Response.builder()
                     .chatId(chatMessage.getChatId())
                     .userId(chatMessage.getUserId())
