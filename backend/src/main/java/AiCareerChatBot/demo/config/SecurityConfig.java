@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                         .requestMatchers("/src/**", "/Users/**", "/@vite/**", "/node_modules/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/auth/signup", "/auth/login", "/auth/refresh").permitAll() // /api 접두사 제거
+                        .requestMatchers("/auth/signup", "/auth/login", "/auth/refresh", "resume/upload").permitAll() // /api 접두사 제거
                         .anyRequest().authenticated() // 나머지 요청은 인증 필요
                 )
                 

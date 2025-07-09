@@ -1,11 +1,13 @@
 package AiCareerChatBot.demo.service;
 
 import AiCareerChatBot.demo.dto.LangServeResponseDto;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -14,15 +16,20 @@ public class LangServeService {
 
     private final WebClient webClient;
 
-    public String getAIResponse(String userMessage) {
+    public String getAIResponse(Long userId, String userMessage) {
         try {
+            Map<String, Object> payload = Map.of(
+                    "userId", userId.toString(),
+                    "userMessage", userMessage,
+                    "temperature", 0.0
+            );
             return webClient.post()
-                    .uri("/chat/invoke")
+                    .uri("/api/chat/ask")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(Map.of("input", Map.of("input", userMessage)))
+                    .bodyValue(payload)
                     .retrieve()
-                    .bodyToMono(LangServeResponseDto.class)
-                    .map(response -> response.getOutput().get("output"))
+                    .bodyToMono(JsonNode.class)
+                    .map(json -> json.get("aiResponse").asText())
                     .block();
         } catch (Exception e) {
             return "죄송합니다. AI 응답에 실패했습니다.";
