@@ -1,42 +1,65 @@
+/*
+ * 전역 스타일: React 애플리케이션의 기본 레이아웃 및 텍스트 정렬 설정
+ */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+    max-width: 1280px; /* 최대 너비를 1280px로 제한 */
+    margin: 0 auto;    /* 요소를 가로로 중앙 정렬 */
+    padding: 2rem;     /* 내부 여백 추가 */
+    text-align: center; /* 텍스트를 중앙 정렬 */
 }
 
+/*
+ * 로고 스타일: 크기, 패딩, 그림자 효과 및 전환 효과 설정
+ */
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+    height: 6em;       /* 높이 설정 */
+    padding: 1.5em;    /* 내부 여백 추가 */
+    will-change: filter; /* 필터 속성 변경 시 성능 최적화 */
+    transition: filter 300ms; /* 필터 변경에 300ms 동안 애니메이션 적용 */
 }
+
+/* 로고에 마우스를 올렸을 때 그림자 효과 */
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+    filter: drop-shadow(0 0 2em #646cffaa); /* 파란색 그림자 효과 */
 }
+
+/* React 로고에 마우스를 올렸을 때의 그림자 효과 (React 고유 색상) */
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+    filter: drop_shadow(0 0 2em #61dafbaa); /* React 색상 그림자 효과 */
 }
 
+/*
+ * 키프레임 애니메이션: 로고 회전 정의
+ */
 @keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg); /* 0도에서 시작 */
+    }
+    to {
+        transform: rotate(360deg); /* 360도 회전으로 종료 */
 }
 
+/*
+ * 미디어 쿼리: 애니메이션 선호도에 따른 로고 회전 적용
+ * 사용자가 애니메이션 축소를 선호하지 않을 때 (기본 애니메이션 활성화) 로고 회전 애니메이션을 적용
+ */
 @media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+    /* 두 번째 'a' 태그 내부의 로고에 애니메이션 적용 (React 로고에 해당) */
+    a:nth-of-type(2) .logo {
+        animation: logo-spin infinite 20s linear; /* logo-spin 애니메이션을 무한히, 20초 동안, 선형 속도로 적용 */
+    }
 }
 
+/*
+ * 카드 스타일: 내부 여백 설정
+ */
 .card {
-  padding: 2em;
+    padding: 2em; /* 내부 여백 추가 */
 }
 
+/*
+ * 'read-the-docs' 클래스 텍스트 색상 설정
+ */
 .read-the-docs {
-  color: #888;
+    color: #888; /* 회색 텍스트 색상 */
 }
