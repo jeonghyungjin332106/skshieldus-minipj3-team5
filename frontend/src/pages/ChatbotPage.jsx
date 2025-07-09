@@ -63,17 +63,28 @@ function ChatbotPage() {
         }
     }, [urlId, navigate, dispatch]);
 
+    /**
+     * [수정됨] axiosInstance를 사용하여 실제 채팅 API를 호출합니다.
+     */
     const handleSendMessage = async (messageText) => {
         if (!messageText.trim() || isAiTyping) return;
         dispatch(addUserMessage(messageText));
         
         try {
-            // TODO: 실제 AI 응답 API 호출
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            const aiResponse = `"${messageText}"에 대한 AI의 데모 응답입니다.`;
+            // axiosInstance를 사용하여 API 호출 (baseURL, 헤더 등 자동 적용)
+            const response = await axiosInstance.post('/chat/send', {
+                message: messageText,
+            });
+            
+            // 백엔드 응답에서 실제 AI 답변 추출
+            const aiResponse = response.data.message;
             dispatch(addAiMessage(aiResponse));
+
         } catch (error) {
-            dispatch(addAiMessage("죄송합니다, 응답 생성 중 오류가 발생했습니다."));
+            // 에러 알림은 axiosInstance 인터셉터가 자동으로 처리합니다.
+            console.error("Chat send error:", error);
+            const errorMessage = error.response?.data?.message || "응답 생성 중 오류가 발생했습니다.";
+            dispatch(addAiMessage(`오류: ${errorMessage}`));
         }
     };
 
@@ -97,6 +108,7 @@ function ChatbotPage() {
                     </h1>
                 </div>
                 <div className="flex flex-1 gap-6 overflow-hidden">
+                    {/* 새 대화일 때만 컨텍스트 업로드 UI 표시 */}
                     {!urlId && (
                         <>
                             <ResumeUploadSection onAnalyzeProp={handleContextSubmit} isLoading={isAiTyping} />
@@ -106,6 +118,7 @@ function ChatbotPage() {
                             </main>
                         </>
                     )}
+                    {/* 이전 대화 불러왔을 때는 채팅창만 전체 너비로 표시 */}
                     {urlId && (
                         <main className="w-full flex flex-col bg-white rounded-2xl shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 h-full">
                             <ChatWindow messages={messages} isThinking={isAiTyping} />

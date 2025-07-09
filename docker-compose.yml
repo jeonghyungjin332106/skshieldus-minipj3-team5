@@ -12,6 +12,9 @@ services:
       # 호스트 PC의 3000번 포트를 컨테이너의 80번 포트와 연결합니다.
       # 이제 브라우저에서 http://localhost:3000 으로 접속할 수 있습니다.
       - "3000:80"
+    environment:
+      - REACT_APP_API_URL=/api
+      - REACT_APP_AI_URL=/api
     # 백엔드 서비스가 먼저 실행된 후에 프론트엔드 서비스를 시작하도록 의존성을 설정합니다.
     depends_on:
       - backend
