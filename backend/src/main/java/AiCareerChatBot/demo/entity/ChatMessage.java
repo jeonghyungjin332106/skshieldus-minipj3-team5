@@ -35,4 +35,14 @@ public class ChatMessage {
     private String message;
 
     private LocalDateTime timestamp;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ChatMessage that = (ChatMessage) o;
+
+        return chatId != null && chatId.equals(that.chatId);
+    }
 }

@@ -4,6 +4,7 @@ import AiCareerChatBot.demo.dto.ChatMessageDto;
 import AiCareerChatBot.demo.dto.ConversationSummaryDto;
 import AiCareerChatBot.demo.entity.ChatMessage;
 import AiCareerChatBot.demo.service.ChatService;
+import AiCareerChatBot.demo.service.ChatServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChatController {
 
-    private final ChatService chatService;
+    private final ChatServiceImpl chatService;
 
     @PostMapping("/send")
     public ResponseEntity<ChatMessageDto.Response> saveChat(@RequestBody @Valid ChatMessageDto.Request dto) {
@@ -30,7 +31,7 @@ public class ChatController {
         String conversationId = userMessage.getConversationId(); // 새 대화일 경우 생성된 ID를 가져옴
 
         // 2. AI 응답 생성
-        String aiResponseText = chatService.getAIResponse(dto.getMessage());
+        String aiResponseText = chatService.getAIResponse(userId, dto.getMessage());
 
         // 3. AI 응답 저장
         chatService.saveChatMessage(userId, aiResponseText, false, conversationId);
@@ -70,7 +71,7 @@ public class ChatController {
                 return Long.parseLong((String) authentication.getPrincipal());
             }
         } catch (Exception e) {
-            // 로깅 필요
+            e.printStackTrace();
         }
         return null; // 또는 예외 발생
     }

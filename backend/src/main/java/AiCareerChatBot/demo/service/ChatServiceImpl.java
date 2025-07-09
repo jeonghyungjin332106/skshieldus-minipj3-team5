@@ -16,7 +16,7 @@ import java.util.UUID;
 public class ChatServiceImpl implements ChatService {
 
     private final ChatMessageRepository chatMessageRepository;
-    // private final LangServeService langServeService; // AI 서버 연동 시 주석 해제
+    private final LangServeService langServeService; // AI 서버 연동 시 주석 해제
 
     @Override
     @Transactional
@@ -34,9 +34,8 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public String getAIResponse(String userMessage) {
-        // TODO: 실제 AI 모델 호출 로직 구현
-        return "AI의 데모 답변입니다: " + userMessage;
+    public String getAIResponse(Long userId, String userMessage) {
+        return langServeService.getAIResponse(userId, userMessage);
     }
 
     @Override

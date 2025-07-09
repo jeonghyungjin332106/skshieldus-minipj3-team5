@@ -66,12 +66,11 @@
 ## 5. AI 채팅 API
 
 ### 5.1 메시지 전송
-- **POST** `/ai/chat`
+- **POST** `/chat/send`
 ```json
 {
-  "question": "Spring Boot의 주요 특징은 무엇인가요?",
-  "contentId": 1,
-  "useRag": true
+  "message": "AI 커리어 상담 시작하고 싶어요.",
+  "sender": false
 }
 ```
 **응답:**
@@ -96,7 +95,7 @@
 ```
 
 ### 5.2 히스토리 조회
-- **GET** `/ai/chat/history?contentId=1&page=0&size=20`
+- **GET** `/chat/history`
 
 ### 5.3 피드백
 - **POST** `/ai/chat/{chatId}/feedback`
