@@ -27,16 +27,14 @@ services:
       # 하지만 개발 중 디버깅을 위해 남겨두는 것도 좋습니다.
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/AiCareerChatBot_db?allowPublicKeyRetrieval=true&useSSL=false
-      SPRING_DATASOURCE_USERNAME: AiCareerChatBot
-      SPRING_DATASOURCE_PASSWORD: AiCareerChatBot
+      SPRING_DATASOURCE_URL: jdbc:mariadb://svc.sel5.cloudtype.app:31061/careerManager?serverTimezone=Asia/Seoul&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       SPRING_DATA_REDIS_CLIENT_SSL_ENABLED: "false"
       SPRING_PROFILES_ACTIVE: prod
     depends_on:
-      mariadb:
-        condition: service_healthy
       redis:
         condition: service_healthy
     volumes:
@@ -56,27 +54,7 @@ services:
       retries: 3
       start_period: 30s
 
-  # --- [기존 MariaDB 서비스] ---
-  mariadb:
-    image: mariadb:11.4
-    container_name: mariadb
-    ports:
-      - "3306:3306"
-    environment:
-      MARIADB_ROOT_PASSWORD: root
-      MARIADB_DATABASE: AiCareerChatBot_db
-      MARIADB_USER: AiCareerChatBot
-      MARIADB_PASSWORD: AiCareerChatBot
-    volumes:
-      - mariadb_data:/var/lib/mysql
-    restart: always
-    healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
 
-volumes:
-  mariadb_data:
+# volumes:
+#   mariadb_data:
 
