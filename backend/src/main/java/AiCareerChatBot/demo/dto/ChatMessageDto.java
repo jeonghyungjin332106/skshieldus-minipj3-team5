@@ -18,8 +18,7 @@ public class ChatMessageDto {
     public static class Request {
         @NotBlank(message = "메시지는 비어 있을 수 없습니다.")
         private String message;
-
-        private boolean sender;
+        private String conversationId;
     }
 
     @Data
@@ -32,11 +31,13 @@ public class ChatMessageDto {
         private boolean sender;
         private String message;
         private LocalDateTime timestamp;
+        private String conversationId;
 
-        public Response(String message, boolean sender) {
+        public Response(String message, boolean sender, String conversationId) {
             this.message = message;
             this.sender = sender;
-            this.timestamp = LocalDateTime.now(); // 기본 현재시간 설정
+            this.conversationId = conversationId;
+            this.timestamp = LocalDateTime.now();
         }
 
         public static Response fromEntity(ChatMessage chatMessage) {
@@ -46,6 +47,7 @@ public class ChatMessageDto {
                     .sender(chatMessage.isSender())
                     .message(chatMessage.getMessage())
                     .timestamp(chatMessage.getTimestamp())
+                    .conversationId(chatMessage.getConversationId())
                     .build();
         }
     }
