@@ -22,8 +22,11 @@ public class ChatMessage {
     @Column(name = "chat_id")
     private Long chatId;
 
-    @Column(name = "user_id", length = 20, nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long userId;
+
+    @Column(name = "conversation_id", nullable = false, length = 36)
+    private String conversationId;
 
     @Column(name = "sender")
     private boolean sender;
@@ -32,22 +35,4 @@ public class ChatMessage {
     private String message;
 
     private LocalDateTime timestamp;
-
-    @Override
-    public String toString() {
-        return "Chat{" +
-                "chatId=" + chatId +
-                ", userId='" + userId + '\'' +
-                ", sender='" + sender + '\'' +
-                ", message='" + message + '\'' +
-                ", timestamp=" + timestamp +
-                '}';
-    }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChatMessage message = (ChatMessage) o;
-        return chatId != null && chatId.equals(message.chatId);
-    }
 }
