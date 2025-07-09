@@ -1,2 +1,4 @@
 .env
 /backend/logs/**
+/py/uplodas/**
+/py/__pychache__/**
