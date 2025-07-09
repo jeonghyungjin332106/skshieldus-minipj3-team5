@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-// [수정] 직접 만든 axiosInstance를 임포트합니다.
-import axiosInstance from '../utils/axiosInstance';
+// axiosInstance는 더 이상 사용하지 않으므로 제거합니다.
+// import axiosInstance from '../utils/axiosInstance'; 
 
 // 컴포넌트 임포트
 import ResumeUploadSection from '../components/ResumeUploadSection';
@@ -11,48 +11,85 @@ import AnalysisResultDisplay from '../components/AnalysisResultDisplay';
 import ChatWindow from '../components/ChatWindow';
 import ChatInput from '../components/ChatInput';
 
-// Redux 액션 임포트
+// Redux 액션 임포트 (analysisSlice 관련만 유지)
 import { startAnalysis, analysisSuccess, analysisFailure, clearAnalysis } from '../features/analysis/analysisSlice';
-import { addUserMessage, addAiMessage, clearChat } from '../features/chat/chatSlice';
+// 채팅 관련 Redux 액션은 로컬 상태로 전환했으므로 제거합니다.
+// import { addUserMessage, addAiMessage, clearChat } from '../features/chat/chatSlice'; 
 
 /**
- * AI 이력서 분석 페이지 컴포넌트입니다.
- */
+ * AI 이력서 분석 페이지 컴포넌트입니다.
+ */
 function ResumeAnalysisPage() {
+    // analysisSlice 관련 Redux 상태 및 디스패치 유지
     const dispatch = useDispatch();
-
     const {
         results: analysisResults,
         isLoading: isAnalysisLoading,
         error: analysisError
     } = useSelector((state) => state.analysis);
 
-    const {
-        messages: chatMessages,
-        isAiTyping,
-    } = useSelector((state) => state.chat);
+    // 채팅 메시지를 로컬 useState로 관리
+    const [chatMessages, setChatMessages] = useState([]);
+    const [isAiTyping, setIsAiTyping] = useState(false); // AI 타이핑 상태도 로컬로 관리
 
     const [isAnalysisChatMode, setIsAnalysisChatMode] = useState(false);
-    const messagesEndRef = useRef(null);
+    const messagesEndRef = useRef(null); // ResumeAnalysisPage에서 정의한 ref
 
+    // 메시지 고유 ID 생성 헬퍼 함수
+    const generateMessageId = () => {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+    };
+
+    // 사용자 메시지 추가 함수 (로컬 상태 업데이트)
+    const addUserMessage = (messageText) => {
+        const newMessage = {
+            id: generateMessageId(),
+            sender: 'user',
+            text: messageText || '', // undefined 방지
+            conversationId: null, // 필요시 실제 conversationId 할당
+            timestamp: new Date().toISOString()
+        };
+        setChatMessages(prev => [...prev, newMessage]);
+    };
+
+    // AI 메시지 추가 함수 (로컬 상태 업데이트)
+    const addAiMessage = (messageText) => {
+        const newMessage = {
+            id: generateMessageId(),
+            sender: 'ai',
+            text: messageText || '', // undefined 방지
+            conversationId: null, // 필요시 실제 conversationId 할당
+            timestamp: new Date().toISOString()
+        };
+        setChatMessages(prev => [...prev, newMessage]);
+    };
+
+    // 초기 메시지 설정 함수
+    const initializeChat = () => {
+        const initialMessage = "이력서 분석이 완료되었습니다! 이 내용을 바탕으로 궁금한 점을 질문해보세요.";
+        addAiMessage(initialMessage);
+    };
+
+    // 컴포넌트 마운트 시 초기화 및 메시지 상태 변경 감시
     useEffect(() => {
+        // 컴포넌트 언마운트 시 분석 결과 및 채팅 초기화
         return () => {
             dispatch(clearAnalysis());
-            dispatch(clearChat());
+            setChatMessages([]); // 로컬 채팅 상태 초기화
         };
     }, [dispatch]);
 
+    // chatMessages 상태 변경 시 스크롤 (기존 로직 유지)
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [chatMessages]);
+
 
     /**
      * [유지] 분석 API가 준비될 때까지 성공을 시뮬레이션합니다.
      */
     const analyzeResume = async () => {
         if (isAnalysisLoading) return;
-
-        console.log("임시 분석을 시작합니다. (API 호출 없음)");
 
         dispatch(startAnalysis());
         setIsAnalysisChatMode(false);
@@ -69,12 +106,14 @@ function ResumeAnalysisPage() {
         dispatch(analysisSuccess(mockResults));
         setIsAnalysisChatMode(true);
         
-        dispatch(addAiMessage(`이력서 분석이 완료되었습니다! 이 내용을 바탕으로 궁금한 점을 질문해보세요.`));
+        // 분석 완료 후 초기 AI 메시지 추가
+        initializeChat(); 
     };
 
+    // 모든 상태 초기화 (로컬 채팅 상태 포함)
     const handleClearAll = () => {
         dispatch(clearAnalysis());
-        dispatch(clearChat());
+        setChatMessages([]); // 로컬 채팅 상태 초기화
         setIsAnalysisChatMode(false);
     };
 
@@ -82,29 +121,68 @@ function ResumeAnalysisPage() {
     const handleExitAnalysisChatMode = () => setIsAnalysisChatMode(false);
 
     /**
-     * [수정됨] axiosInstance를 사용하여 채팅 API를 호출합니다.
+     * [수정됨] fetch API를 사용하여 채팅 API를 호출합니다. (JWT 토큰 포함)
      */
     const handleSendMessage = async (messageText) => {
-        if (!messageText.trim() || isAiTyping) return;
+        if (!messageText.trim() || isAiTyping) {
+            return;
+        }
 
-        dispatch(addUserMessage(messageText));
+        const trimmedMessage = messageText.trim();
+        
+        setIsAiTyping(true); // AI 타이핑 시작
+        addUserMessage(trimmedMessage); // 사용자 메시지 추가
 
         try {
-            // axiosInstance를 사용하여 API 호출 (baseURL, 헤더 등 자동 적용)
-            const response = await axiosInstance.post('/chat/send', {
-                message: messageText,
+            // JWT 토큰을 localStorage에서 가져옵니다.
+            const token = localStorage.getItem('jwtToken'); 
+            if (!token) {
+                addAiMessage("오류: 인증 토큰이 없어 요청을 보낼 수 없습니다. 로그인해주세요.");
+                setIsAiTyping(false);
+                return;
+            }
+
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Authorization 헤더 추가
+            };
+
+            // 백엔드 실제 엔드포인트 경로로 변경: /api/chat/send
+            const response = await fetch('/api/chat/send', { 
+                method: 'POST',
+                headers: headers, // 수정된 헤더 사용
+                body: JSON.stringify({
+                    userId: "anonymous_user", // 백엔드에서 SecurityContextHolder로 userId를 가져오므로, 이 값은 더미일 수 있습니다.
+                    message: trimmedMessage,
+                    conversationId: null // 필요시 실제 conversationId
+                }),
             });
             
-            // 백엔드 응답에서 실제 AI 답변 추출
-            const aiResponse = response.data.message;
-            dispatch(addAiMessage(aiResponse));
-
-        } catch (err) {
-            // 에러 알림은 axiosInstance 인터셉터가 자동으로 처리합니다.
-            console.error("Chat send error:", err);
-            const errorMessage = err.response?.data?.message || "답변을 가져오는 중 오류가 발생했습니다.";
-            dispatch(addAiMessage(`오류: ${errorMessage}`));
+            if (response.ok) {
+                const result = await response.json();
+                
+                // API 응답에서 실제 AI 답변 추출 (백엔드 응답 필드명에 따라 조정)
+                const aiResponseText = result.aiResponse || 
+                                       result.message || 
+                                       result.text || 
+                                       result.content || 
+                                       `AI의 데모 답변입니다: ${trimmedMessage}`; // 폴백 메시지
+                
+                addAiMessage(aiResponseText);
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                addAiMessage(`오류: ${errorData.detail || errorData.message || '죄송합니다. 응답을 생성하는 중 오류가 발생했습니다.'}`);
+            }
+        } catch (error) {
+            addAiMessage('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
+        } finally {
+            setIsAiTyping(false); // AI 타이핑 종료
         }
+    };
+
+    // 질문 버튼 클릭 처리 함수
+    const handleExampleQuestionClick = (questionText) => {
+        handleSendMessage(questionText);
     };
 
     const exampleQuestions = [
@@ -186,12 +264,13 @@ function ResumeAnalysisPage() {
                                         [결과 보기]
                                     </button>
                                 </div>
-                                <ChatWindow messages={chatMessages} isThinking={isAiTyping} />
+                                {/* messagesEndRef를 ChatWindow에 전달 */}
+                                <ChatWindow messages={chatMessages} isThinking={isAiTyping} messagesEndRef={messagesEndRef} />
                                 <ChatInput
                                     onSendMessage={handleSendMessage}
                                     isLoading={isAiTyping}
                                     handleClearChat={handleClearAll}
-                                    handleExampleQuestionClick={handleSendMessage}
+                                    handleExampleQuestionClick={handleExampleQuestionClick}
                                     exampleQuestions={exampleQuestions}
                                 />
                             </div>

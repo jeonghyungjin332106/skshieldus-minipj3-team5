@@ -3,11 +3,14 @@
 import React, { useRef, useEffect } from 'react';
 import FeedbackButton from './FeedbackButton'; // 피드백 버튼 임포트
 
-function ChatWindow({ messages, isThinking }) {
-    const messagesEndRef = useRef(null);
+// messagesEndRef를 prop으로 받도록 수정
+function ChatWindow({ messages, isThinking, messagesEndRef }) { 
+    // ChatWindow 내부의 messagesEndRef 정의는 제거합니다.
+    // const messagesEndRef = useRef(null); // 이 줄을 제거
 
+    // chatMessages 상태 변경 시 스크롤 (기존 로직 유지)
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); 
     }, [messages]);
 
     return (
@@ -26,21 +29,26 @@ function ChatWindow({ messages, isThinking }) {
                     >
                         <div className={`flex ${ msg.sender === 'user' ? 'justify-end' : 'justify-start' }`}>
                              <div
-                                className={`max-w-[80%] p-3 rounded-xl shadow-sm text-sm whitespace-pre-wrap break-words ${
-                                    msg.sender === 'user'
-                                        ? 'bg-blue-600 text-white rounded-br-none dark:bg-blue-700'
-                                        : 'bg-gray-200 text-gray-800 rounded-bl-none dark:bg-gray-600 dark:text-gray-50'
-                                }`}
-                            >
-                                <p className="text-base leading-relaxed">{msg.text}</p>
-                            </div>
+                                 className={`max-w-[80%] p-3 rounded-xl shadow-sm text-sm whitespace-pre-wrap break-words 
+                                     ${msg.sender === 'user'
+                                         ? 'bg-blue-600 text-white rounded-br-none dark:bg-blue-700'
+                                         : 'bg-gray-200 text-gray-800 rounded-bl-none dark:bg-gray-600 dark:text-gray-50'
+                                     }`}
+                             >
+                                 {/* AI 메시지가 JSON 문자열인 경우 <pre> 태그로 렌더링 */}
+                                 {msg.sender === 'ai' && msg.text && msg.text.startsWith('{') && msg.text.endsWith('}') ? (
+                                     <pre className="text-base leading-relaxed font-mono overflow-auto">{msg.text}</pre>
+                                 ) : (
+                                     <p className="text-base leading-relaxed">{msg.text}</p>
+                                 )}
+                             </div>
                         </div>
-                       
-                        {/* [수정] AI가 보낸 메시지이고, 내용이 비어있지 않을 때만 피드백 버튼을 표시합니다. */}
+                        
+                        {/* AI가 보낸 메시지이고, 내용이 비어있지 않을 때만 피드백 버튼을 표시합니다. */}
                         {msg.sender === 'ai' && msg.text && (
-                             <div className="flex justify-start">
-                                <FeedbackButton messageId={msg.id} />
-                            </div>
+                               <div className="flex justify-start mt-1"> {/* 마진 추가로 메시지와 버튼 분리 */}
+                                   <FeedbackButton messageId={msg.id} />
+                               </div>
                         )}
                     </div>
                 ))
@@ -58,7 +66,7 @@ function ChatWindow({ messages, isThinking }) {
                     </div>
                 </div>
             )}
-            <div ref={messagesEndRef} />
+            <div ref={messagesEndRef} /> {/* 스크롤을 위한 ref */}
         </div>
     );
 }

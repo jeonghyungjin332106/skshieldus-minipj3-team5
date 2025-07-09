@@ -108,6 +108,14 @@ function LoginPage() {
             // API 응답에서 필요한 데이터 추출
             const { accessToken, userName, userId } = response.data;
 
+            // [핵심 수정 부분] JWT 토큰을 localStorage에 저장합니다.
+            if (accessToken) {
+                localStorage.setItem('jwtToken', accessToken);
+                console.log('JWT 토큰이 localStorage에 저장되었습니다:', accessToken);
+            } else {
+                console.warn('로그인 성공했으나 응답에 accessToken이 없습니다.');
+            }
+
             // Redux 스토어에 저장할 사용자 정보 객체 생성
             const user = {
                 userId: userId,
@@ -152,7 +160,7 @@ function LoginPage() {
     return (
         <div
             className="flex items-center justify-center min-h-screen bg-gray-100
-                       dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                        dark:bg-gray-800 text-gray-900 dark:text-gray-100"
         >
             <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm dark:bg-gray-700">
                 <h2 className="text-2xl font-bold text-center mb-6 dark:text-gray-50">
@@ -174,8 +182,8 @@ function LoginPage() {
                                 id="username"
                                 // 유효성 검사 실패 시 빨간색 테두리, 성공 시 기본 회색 테두리 적용
                                 className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline
-                                            dark:bg-gray-600 dark:border-gray-500 dark:text-gray-100
-                                            ${usernameError ? 'border-red-500' : 'border-gray-300'}`}
+                                         dark:bg-gray-600 dark:border-gray-500 dark:text-gray-100
+                                         ${usernameError ? 'border-red-500' : 'border-gray-300'}`}
                                 value={username}
                                 onChange={(e) => {
                                     setUsername(e.target.value);
@@ -206,8 +214,8 @@ function LoginPage() {
                                 id="password"
                                 // 유효성 검사 실패 시 빨간 테두리, 성공 시 기본 회색 테두리 적용
                                 className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline
-                                            dark:bg-gray-600 dark:border-gray-500 dark:text-gray-100
-                                            ${passwordError ? 'border-red-500' : 'border-gray-300'}`}
+                                         dark:bg-gray-600 dark:border-gray-500 dark:text-gray-100
+                                         ${passwordError ? 'border-red-500' : 'border-gray-300'}`}
                                 value={password}
                                 onChange={(e) => {
                                     setPassword(e.target.value);
@@ -236,7 +244,7 @@ function LoginPage() {
                             <button
                                 type="submit"
                                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded
-                                           focus:outline-none focus:shadow-outline w-full"
+                                         focus:outline-none focus:shadow-outline w-full"
                                 disabled={isLoading} // 로딩 중 비활성화
                             >
                                 {/* 로그인 진행 중일 때 로딩 스피너 및 메시지 표시 */}
