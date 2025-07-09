@@ -7,7 +7,6 @@ import ChatWindow from '../components/ChatWindow';
 import ChatInput from '../components/ChatInput';
 import { addUserMessage, addAiMessage, setMessages, clearChat, setAiTyping } from '../features/chat/chatSlice';
 import axiosInstance from '../utils/axiosInstance';
-import { MOCK_CONVERSATIONS } from '../mocks/data.js';
 
 function ChatbotPage() {
     const { id: urlId } = useParams();
@@ -18,7 +17,6 @@ function ChatbotPage() {
     const [pageTitle, setPageTitle] = useState("AI 커리어 챗봇");
 
     useEffect(() => {
-        // 페이지를 벗어날 때 Redux의 채팅 상태를 깨끗하게 정리합니다.
         return () => {
             dispatch(clearChat());
         };
@@ -28,21 +26,20 @@ function ChatbotPage() {
         const fetchConversationById = async (id) => {
             dispatch(setAiTyping(true));
             try {
-                let loadedData;
-                if (import.meta.env.DEV) {
-                    console.log(`ChatbotPage: 개발 모드이므로 ID(${id})에 해당하는 목업 데이터를 찾습니다.`);
-                    loadedData = MOCK_CONVERSATIONS.find(conv => conv._id === id);
-                } else {
-                    const response = await axiosInstance.get(`/chat/${id}`);
-                    loadedData = response.data;
-                }
+                const response = await axiosInstance.get(`/chat/${id}`);
+                const loadedMessages = response.data;
 
-                if (loadedData) {
-                    const formattedMessages = loadedData.chatHistory.map(msg => ({
-                        sender: msg.role === 'assistant' ? 'ai' : 'user', text: msg.content
+                if (loadedMessages && Array.isArray(loadedMessages)) {
+                    const formattedMessages = loadedMessages.map(msg => ({
+                        id: msg.chatId,
+                        sender: msg.sender ? 'user' : 'ai',
+                        text: msg.message
                     }));
                     dispatch(setMessages(formattedMessages));
-                    setPageTitle(loadedData.title);
+                    
+                    const firstUserMessage = formattedMessages.find(m => m.sender === 'user');
+                    setPageTitle(firstUserMessage ? firstUserMessage.text : "이전 대화");
+
                 } else {
                     navigate('/history');
                 }
@@ -58,42 +55,67 @@ function ChatbotPage() {
             fetchConversationById(urlId);
         } else {
             dispatch(clearChat());
-            dispatch(addAiMessage('안녕하세요! AI 커리어 챗봇입니다. 무엇을 도와드릴까요?'));
+            dispatch(addAiMessage({ text: '안녕하세요! AI 커리어 챗봇입니다. 무엇을 도와드릴까요?' }));
             setPageTitle("AI 커리어 챗봇 (새 대화)");
         }
     }, [urlId, navigate, dispatch]);
 
-    /**
-     * [수정됨] axiosInstance를 사용하여 실제 채팅 API를 호출합니다.
-     */
     const handleSendMessage = async (messageText) => {
         if (!messageText.trim() || isAiTyping) return;
-        dispatch(addUserMessage(messageText));
+
+        const currentConversationId = urlId || null;
+        dispatch(addUserMessage({ text: messageText, conversationId: currentConversationId }));
         
         try {
-            // axiosInstance를 사용하여 API 호출 (baseURL, 헤더 등 자동 적용)
             const response = await axiosInstance.post('/chat/send', {
                 message: messageText,
+                conversationId: currentConversationId
             });
             
-            // 백엔드 응답에서 실제 AI 답변 추출
-            const aiResponse = response.data.message;
-            dispatch(addAiMessage(aiResponse));
+            const aiResponse = response.data;
+            dispatch(addAiMessage({ text: aiResponse.message, conversationId: aiResponse.conversationId }));
+
+            if (!urlId && aiResponse.conversationId) {
+                navigate(`/chatbot/${aiResponse.conversationId}`, { replace: true });
+            }
 
         } catch (error) {
-            // 에러 알림은 axiosInstance 인터셉터가 자동으로 처리합니다.
             console.error("Chat send error:", error);
             const errorMessage = error.response?.data?.message || "응답 생성 중 오류가 발생했습니다.";
-            dispatch(addAiMessage(`오류: ${errorMessage}`));
+            dispatch(addAiMessage({ text: `오류: ${errorMessage}` }));
         }
     };
 
-    const handleContextSubmit = (context) => {
-        const firstMessage = context.file 
-            ? `파일(${context.file.name})을 업로드했습니다. 이 내용을 바탕으로 대화를 시작합니다.`
-            : `다음 내용을 바탕으로 대화를 시작합니다:\n\n${context.text}`;
-        dispatch(clearChat());
-        dispatch(addAiMessage(firstMessage));
+    /**
+     * [수정] 컨텍스트(파일/텍스트)를 실제 서버에 제출하여 새 대화를 시작합니다.
+     */
+    const handleContextSubmit = async (context) => {
+        dispatch(setAiTyping(true));
+        try {
+            const formData = new FormData();
+            if (context.file) {
+                formData.append('file', context.file);
+            } else {
+                formData.append('text', context.text);
+            }
+
+            // 컨텍스트를 제출하여 새 대화를 생성하는 API 호출 (가정)
+            const response = await axiosInstance.post('/chat/new-with-context', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            
+            const newConversationId = response.data.conversationId; // 응답으로 새 대화 ID를 받는다고 가정
+            if (newConversationId) {
+                // 새 대화 페이지로 이동하면, useEffect가 대화 내용을 불러옵니다.
+                navigate(`/chatbot/${newConversationId}`);
+            }
+
+        } catch (error) {
+            console.error("Error creating new conversation with context:", error);
+            // 에러 알림은 axiosInstance 인터셉터가 처리합니다.
+        } finally {
+            dispatch(setAiTyping(false));
+        }
     };
 
     return (
@@ -108,7 +130,6 @@ function ChatbotPage() {
                     </h1>
                 </div>
                 <div className="flex flex-1 gap-6 overflow-hidden">
-                    {/* 새 대화일 때만 컨텍스트 업로드 UI 표시 */}
                     {!urlId && (
                         <>
                             <ResumeUploadSection onAnalyzeProp={handleContextSubmit} isLoading={isAiTyping} />
@@ -118,7 +139,6 @@ function ChatbotPage() {
                             </main>
                         </>
                     )}
-                    {/* 이전 대화 불러왔을 때는 채팅창만 전체 너비로 표시 */}
                     {urlId && (
                         <main className="w-full flex flex-col bg-white rounded-2xl shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 h-full">
                             <ChatWindow messages={messages} isThinking={isAiTyping} />

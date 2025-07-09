@@ -1,13 +1,13 @@
 package AiCareerChatBot.demo.controller;
 
 import AiCareerChatBot.demo.dto.ChatMessageDto;
+import AiCareerChatBot.demo.dto.ConversationSummaryDto;
 import AiCareerChatBot.demo.entity.ChatMessage;
 import AiCareerChatBot.demo.service.ChatService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,30 +25,44 @@ public class ChatController {
     public ResponseEntity<ChatMessageDto.Response> saveChat(@RequestBody @Valid ChatMessageDto.Request dto) {
         Long userId = getCurrentUserId();
 
-        // 1. 사용자 메시지 저장 (isSender=true)
-        chatService.saveChatMessage(userId, dto.getMessage(), true);
+        // 1. 사용자 메시지 저장
+        ChatMessage userMessage = chatService.saveChatMessage(userId, dto.getMessage(), true, dto.getConversationId());
+        String conversationId = userMessage.getConversationId(); // 새 대화일 경우 생성된 ID를 가져옴
 
-        // 2. AI 응답 생성 요청
-        String aiResponse = chatService.getAIResponse(dto.getMessage());
+        // 2. AI 응답 생성
+        String aiResponseText = chatService.getAIResponse(dto.getMessage());
 
-        // 3. AI 응답 저장 (isSender=false)
-        chatService.saveChatMessage(userId, aiResponse, false);
+        // 3. AI 응답 저장
+        chatService.saveChatMessage(userId, aiResponseText, false, conversationId);
 
-        // 4. 프론트로 응답 반환
-        return ResponseEntity.ok(new ChatMessageDto.Response(aiResponse, false));
+        // 4. 프론트로 응답 반환 (수정된 생성자 사용)
+        return ResponseEntity.ok(new ChatMessageDto.Response(aiResponseText, false, conversationId));
     }
 
     @GetMapping("/history")
-    public  ResponseEntity<List<ChatMessageDto.Response>> getHistory() {
+    public ResponseEntity<List<ConversationSummaryDto>> getHistory() {
         Long userId = getCurrentUserId();
-        List<ChatMessage> messages = chatService.getChatHistory(userId);
+        List<ConversationSummaryDto> historySummaries = chatService.getConversationSummaries(userId);
+        return ResponseEntity.ok(historySummaries);
+    }
+
+    @GetMapping("/{conversationId}")
+    public ResponseEntity<List<ChatMessageDto.Response>> getConversationDetails(@PathVariable String conversationId) {
+        Long userId = getCurrentUserId();
+        List<ChatMessage> messages = chatService.getMessagesByConversationId(userId, conversationId);
         List<ChatMessageDto.Response> responseList = messages.stream()
                 .map(ChatMessageDto.Response::fromEntity)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(responseList);
     }
 
-    // 현재 사용자 ID 추출 (SecurityContext에서)
+    @DeleteMapping("/{conversationId}")
+    public ResponseEntity<Void> deleteConversation(@PathVariable String conversationId) {
+        Long userId = getCurrentUserId();
+        chatService.deleteConversation(userId, conversationId);
+        return ResponseEntity.noContent().build();
+    }
+
     private Long getCurrentUserId() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -56,8 +70,8 @@ public class ChatController {
                 return Long.parseLong((String) authentication.getPrincipal());
             }
         } catch (Exception e) {
-            // 로그 추가 가능
+            // 로깅 필요
         }
-        return null;
+        return null; // 또는 예외 발생
     }
 }
