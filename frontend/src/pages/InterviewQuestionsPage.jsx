@@ -1,35 +1,75 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-// [수정] 직접 만든 axiosInstance를 임포트합니다.
-import axiosInstance from '../utils/axiosInstance'; 
+// axiosInstance는 더 이상 사용하지 않으므로 제거합니다.
+// import axiosInstance from '../utils/axiosInstance'; 
 
 import QuestionGenerationControls from '../components/QuestionGenerationControls';
 import GeneratedQuestionsDisplay from '../components/GeneratedQuestionsDisplay';
 import ChatWindow from '../components/ChatWindow';
 import ChatInput from '../components/ChatInput';
+import FeedbackButton from '../components/FeedbackButton'; // FeedbackButton 임포트 추가
 
-import { addUserMessage, addAiMessage, clearChat, startQuestionChat } from '../features/chat/chatSlice';
+// Redux 액션 임포트 (interviewSlice 관련만 유지)
+// 채팅 관련 Redux 액션은 로컬 상태로 전환했으므로 제거합니다.
+// import { addUserMessage, addAiMessage, clearChat, startQuestionChat } from '../features/chat/chatSlice'; 
 import { startQuestionGeneration, questionGenerationSuccess, clearGeneratedQuestions } from '../features/interview/interviewSlice';
-// [수정] notifyError는 axiosInstance에서 처리하므로 여기서 직접 사용할 필요가 없습니다.
-// import { notifyError } from '../components/Notification';
 
 function InterviewQuestionsPage() {
     const dispatch = useDispatch();
 
     const { generatedQuestions, isLoading: isLoadingQuestions, error: questionGenerationError } = useSelector((state) => state.interview);
-    const { messages: chatMessages, isAiTyping } = useSelector((state) => state.chat);
+    
+    // 채팅 메시지를 로컬 useState로 관리
+    const [chatMessages, setChatMessages] = useState([]);
+    const [isAiTyping, setIsAiTyping] = useState(false); // AI 타이핑 상태도 로컬로 관리
 
     const [isChatMode, setIsChatMode] = useState(false);
     const [currentQuestionForChat, setCurrentQuestionForChat] = useState(null);
+    const messagesEndRef = useRef(null); // InterviewQuestionsPage에서 정의한 ref
 
+    // 메시지 고유 ID 생성 헬퍼 함수
+    const generateMessageId = () => {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+    };
+
+    // 사용자 메시지 추가 함수 (로컬 상태 업데이트)
+    const addUserMessage = (messageText) => {
+        const newMessage = {
+            id: generateMessageId(),
+            sender: 'user',
+            text: messageText || '', // undefined 방지
+            conversationId: null, // 필요시 실제 conversationId 할당
+            timestamp: new Date().toISOString()
+        };
+        setChatMessages(prev => [...prev, newMessage]);
+    };
+
+    // AI 메시지 추가 함수 (로컬 상태 업데이트)
+    const addAiMessage = (messageText) => {
+        const newMessage = {
+            id: generateMessageId(),
+            sender: 'ai',
+            text: messageText || '', // undefined 방지
+            conversationId: null, // 필요시 실제 conversationId 할당
+            timestamp: new Date().toISOString()
+        };
+        setChatMessages(prev => [...prev, newMessage]);
+    };
+
+    // 컴포넌트 언마운트 시 초기화 (로컬 채팅 상태 포함)
     useEffect(() => {
         return () => {
             dispatch(clearGeneratedQuestions());
-            dispatch(clearChat());
+            setChatMessages([]); // 로컬 채팅 상태 초기화
         };
     }, [dispatch]);
+
+    // chatMessages 상태 변경 시 스크롤 (기존 로직 유지)
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [chatMessages]);
 
     /**
      * 질문 생성은 성공했다고 가정하고, 가짜(mock) 데이터를 사용합니다.
@@ -37,16 +77,13 @@ function InterviewQuestionsPage() {
     const generateQuestions = (options) => {
         if (isLoadingQuestions) return;
 
-        // [참고] notifyError는 이제 axiosInstance에서 호출되므로 여기서 직접 호출할 필요가 없습니다.
         if (!options.companyName && !options.resumeFile) {
-            // notifyError('회사 이름을 입력하거나 이력서 파일을 첨부해주세요.');
-            // 간단한 유효성 검사는 alert나 다른 UI로 처리할 수 있습니다.
             alert('회사 이름을 입력하거나 이력서 파일을 첨부해주세요.');
             return;
         }
 
         dispatch(startQuestionGeneration());
-        dispatch(clearChat());
+        setChatMessages([]); // 새 질문 생성 시 로컬 채팅 초기화
         setIsChatMode(false);
 
         setTimeout(() => {
@@ -64,44 +101,80 @@ function InterviewQuestionsPage() {
     const handleOpenFeedbackChat = (question) => {
         setIsChatMode(true);
         setCurrentQuestionForChat(question);
-        dispatch(startQuestionChat(question));
+        // 채팅 시작 시 초기 질문 설정 (로컬 addAiMessage 사용)
+        setChatMessages([]); // 기존 채팅 지우고 시작
+        addAiMessage(`면접 질문: "${question}"에 대한 답변을 입력해주세요.`); 
     };
 
     /**
-     * [수정됨] axiosInstance를 사용하여 API를 호출합니다.
+     * [수정됨] fetch API를 사용하여 API를 호출합니다. (JWT 토큰 포함)
      */
     const handleSendMessage = async (messageText) => {
-        if (!messageText.trim() || isAiTyping) return;
+        if (!messageText.trim() || isAiTyping) {
+            return;
+        }
 
-        dispatch(addUserMessage(messageText));
+        const trimmedMessage = messageText.trim();
+        
+        setIsAiTyping(true); // AI 타이핑 시작
+        addUserMessage(trimmedMessage); // 사용자 메시지 추가
 
         try {
-            // axiosInstance는 baseURL이 '/api'로 설정되어 있으므로, 나머지 경로만 적어줍니다.
-            const response = await axiosInstance.post('/chat/send', {
-                message: messageText
+            // JWT 토큰을 localStorage에서 가져옵니다.
+            const token = localStorage.getItem('jwtToken'); 
+            if (!token) {
+                addAiMessage("오류: 인증 토큰이 없어 요청을 보낼 수 없습니다. 로그인해주세요.");
+                setIsAiTyping(false);
+                return;
+            }
+
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Authorization 헤더 추가
+            };
+
+            // 백엔드 실제 엔드포인트 경로로 변경: /api/chat/send
+            const response = await fetch('/api/chat/send', { 
+                method: 'POST',
+                headers: headers, // 수정된 헤더 사용
+                body: JSON.stringify({
+                    userId: "anonymous_user", // 백엔드에서 SecurityContextHolder로 userId를 가져오므로, 이 값은 더미일 수 있습니다.
+                    message: trimmedMessage,
+                    conversationId: null // 필요시 실제 conversationId
+                }),
             });
             
-            const aiFeedback = response.data.message; 
-            dispatch(addAiMessage(aiFeedback));
-
-        } catch (err) {
-            // 에러 알림은 axiosInstance의 응답 인터셉터가 자동으로 처리합니다.
-            // 여기서는 채팅창에 에러 메시지를 표시하는 등 UI 관련 로직만 처리합니다.
-            console.error("Chat send error:", err);
-            const errorMessage = err.response?.data?.message || "피드백을 가져오는 중 오류가 발생했습니다.";
-            dispatch(addAiMessage(`오류: ${errorMessage}`));
+            if (response.ok) {
+                const result = await response.json();
+                
+                // API 응답에서 실제 AI 답변 추출 (백엔드 응답 필드명에 따라 조정)
+                const aiResponseText = result.aiResponse || 
+                                       result.message || 
+                                       result.text || 
+                                       result.content || 
+                                       `AI의 데모 답변입니다: ${trimmedMessage}`; // 폴백 메시지
+                
+                addAiMessage(aiResponseText);
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                addAiMessage(`오류: ${errorData.detail || errorData.message || '죄송합니다. 응답을 생성하는 중 오류가 발생했습니다.'}`);
+            }
+        } catch (error) {
+            addAiMessage('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
+        } finally {
+            setIsAiTyping(false); // AI 타이핑 종료
         }
     };
 
     const handleExitChatMode = () => {
         setIsChatMode(false);
         setCurrentQuestionForChat(null);
-        dispatch(clearChat());
+        setChatMessages([]); // 로컬 채팅 상태 초기화
     };
 
     const handleClearAll = () => {
         dispatch(clearGeneratedQuestions());
-        dispatch(clearChat());
+        setChatMessages([]); // 로컬 채팅 상태 초기화
         setIsChatMode(false);
         setCurrentQuestionForChat(null);
     };
@@ -154,7 +227,8 @@ function InterviewQuestionsPage() {
                                         [목록으로]
                                     </button>
                                 </div>
-                                <ChatWindow messages={chatMessages} isThinking={isAiTyping} />
+                                {/* messagesEndRef를 ChatWindow에 전달 */}
+                                <ChatWindow messages={chatMessages} isThinking={isAiTyping} messagesEndRef={messagesEndRef} />
                                 <ChatInput
                                     onSendMessage={handleSendMessage}
                                     isLoading={isAiTyping}
