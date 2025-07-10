@@ -18,7 +18,7 @@ public class ResumeService {
     public String handleResumeUpload(Long userId, MultipartFile file) {
         try {
             // 1. AI 서버로 이력서 파일 전송
-            String result = sendResumeToAI(file);
+            String result = sendResumeToAI(file, userId);
             return "이력서 업로드 성공: " + result;
 
         } catch (Exception e) {
@@ -27,7 +27,7 @@ public class ResumeService {
         }
     }
 
-    private String sendResumeToAI(MultipartFile file) throws Exception {
+    private String sendResumeToAI(MultipartFile file, Long userId) throws Exception {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("file", new ByteArrayResource(file.getBytes()) {
             @Override
@@ -35,6 +35,11 @@ public class ResumeService {
                 return file.getOriginalFilename();  // FastAPI 쪽에서 filename 필요
             }
         }).contentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        // Form 필드 파트 추가
+        builder.part("userId", userId != null ? userId.toString() : "anonymous_user");
+        builder.part("chunkSize", "1000");
+        builder.part("chunkOverlap", "200");
 
         return webClient.post()
                 .uri("/api/resume/upload")  // AI 서버 endpoint

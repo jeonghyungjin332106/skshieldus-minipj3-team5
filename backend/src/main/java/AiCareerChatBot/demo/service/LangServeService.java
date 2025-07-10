@@ -16,22 +16,25 @@ public class LangServeService {
 
     private final WebClient webClient;
 
-    public String getAIResponse(Long userId, String userMessage) {
+    public String getAIResponse(Long userId, String userMessage, Double temperature) {
         try {
-            Map<String, Object> payload = Map.of(
+            Map<String, Object> requestPayload = Map.of(
                     "userId", userId.toString(),
                     "userMessage", userMessage,
-                    "temperature", 0.0
+                    "temperature", temperature != null ? temperature : 0.0
             );
+
             return webClient.post()
                     .uri("/api/chat/ask")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(payload)
+                    .bodyValue(requestPayload)
                     .retrieve()
                     .bodyToMono(JsonNode.class)
                     .map(json -> json.get("aiResponse").asText())
                     .block();
+
         } catch (Exception e) {
+            e.printStackTrace();
             return "죄송합니다. AI 응답에 실패했습니다.";
         }
     }

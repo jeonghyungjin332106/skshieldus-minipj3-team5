@@ -1,5 +1,6 @@
 package AiCareerChatBot.demo.controller;
 
+import AiCareerChatBot.demo.provider.JwtProvider;
 import AiCareerChatBot.demo.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,23 +15,25 @@ import org.springframework.web.multipart.MultipartFile;
 public class ResumeController {
 
     private final ResumeService resumeService;
+    private final JwtProvider jwtProvider;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadResume(@RequestParam("file") MultipartFile file) {
-        Long userId = getCurrentUserId();
+    public ResponseEntity<String> uploadResume(@RequestParam("file") MultipartFile file,
+                                               @RequestHeader("Authorization") String authorizationHeader) {
+        Long userId = extractUserIdFromJwt(authorizationHeader);
         String result = resumeService.handleResumeUpload(userId, file);
         return ResponseEntity.ok(result);
     }
-
-    private Long getCurrentUserId() {
+    private Long extractUserIdFromJwt(String authorizationHeader) {
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication != null && authentication.getPrincipal() instanceof String) {
-                return Long.parseLong((String) authentication.getPrincipal());
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+                String token = authorizationHeader.substring(7); // "Bearer " 제거
+                String userIdStr = jwtProvider.getUserIdFromToken(token);
+                return Long.parseLong(userIdStr);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return null; // anonymous fallback (AI 서버에서 기본값 있음)
     }
 }

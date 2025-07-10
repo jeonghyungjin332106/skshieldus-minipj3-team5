@@ -32,7 +32,7 @@ public class ChatController {
         String conversationId = userMessage.getConversationId(); // 새 대화일 경우 생성된 ID를 가져옴
 
         // 2. AI 응답 생성
-        String aiResponseText = chatService.getAIResponse(userId, dto.getMessage());
+        String aiResponseText = chatService.getAIResponse(userId, dto.getMessage(), dto.getTemperature());
 
         // 3. AI 응답 저장
         chatService.saveChatMessage(userId, aiResponseText, false, conversationId);
