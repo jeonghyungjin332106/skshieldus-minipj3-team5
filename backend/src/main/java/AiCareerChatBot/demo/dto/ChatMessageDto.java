@@ -19,6 +19,8 @@ public class ChatMessageDto {
         @NotBlank(message = "메시지는 비어 있을 수 없습니다.")
         private String message;
         private String conversationId;
+
+        private Double temperature = 0.0;
     }
 
     @Data

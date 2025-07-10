@@ -34,8 +34,8 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public String getAIResponse(Long userId, String userMessage) {
-        return langServeService.getAIResponse(userId, userMessage);
+    public String getAIResponse(Long userId, String userMessage, Double temperature) {
+        return langServeService.getAIResponse(userId, userMessage, temperature);
     }
 
     @Override

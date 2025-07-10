@@ -9,7 +9,7 @@ public interface ChatService {
 
     ChatMessage saveChatMessage(Long userId, String message, boolean isSender, String conversationId);
 
-    String getAIResponse(Long userId, String userMessage);
+    String getAIResponse(Long userId, String userMessage, Double temperature);
 
     List<ConversationSummaryDto> getConversationSummaries(Long userId);
 
