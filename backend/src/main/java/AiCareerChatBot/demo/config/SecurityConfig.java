@@ -35,12 +35,13 @@ public class SecurityConfig {
                 
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // CORS Preflight 요청 허용
-                        .requestMatchers("/", "/index.html", "/static/**", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/areas/**", "/categories/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
-                        .requestMatchers("/src/**", "/Users/**", "/@vite/**", "/node_modules/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/auth/signup", "/auth/login", "/auth/refresh", "resume/upload").permitAll() // /api 접두사 제거
-                        .anyRequest().authenticated() // 나머지 요청은 인증 필요
+                        
+                        // [수정] 인증 없이 접근 가능한 API는 로그인/회원가입/토큰갱신만 허용합니다.
+                        .requestMatchers("/auth/signup", "/auth/login", "/auth/refresh").permitAll()
+                        
+                        // [수정] 그 외 모든 요청은 인증이 필요하도록 설정합니다.
+                        // 이제 /resume/upload, /chat/** 등은 모두 인증을 거칩니다.
+                        .anyRequest().authenticated()
                 )
                 
                 .exceptionHandling(exceptions -> exceptions
@@ -50,7 +51,7 @@ public class SecurityConfig {
                 .httpBasic(basic -> basic.disable())
                 .logout(logout -> logout.disable())
                 
-                // JwtAuthenticationFilter를 다시 활성화합니다.
+                // 모든 요청에 대해 JWT 토큰을 검사하는 커스텀 필터를 추가합니다.
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 
                 .build();
@@ -65,7 +66,8 @@ public class SecurityConfig {
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        // [수정] /api/** 로 시작하는 경로에 대해서만 이 CORS 설정을 적용합니다.
+        source.registerCorsConfiguration("/api/**", configuration);
         return source;
     }
 
