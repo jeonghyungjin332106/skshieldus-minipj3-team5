@@ -1,0 +1,25 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: team-members-edit
+  namespace: ai-career-chat
+subjects:
+- kind: User
+  name: dlawhdtjq372@gmail.com
+  apiGroup: rbac.authorization.k8s.io
+- kind: User
+  name: sungmin2959@gmail.com
+  apiGroup: rbac.authorization.k8s.io
+- kind: User
+  name: edujcm01@gmail.com
+  apiGroup: rbac.authorization.k8s.io
+- kind: User
+  name: gudwls1239@gmail.com
+  apiGroup: rbac.authorization.k8s.io
+- kind: User
+  name: kanghyeokjie@gmail.com
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: edit
+  apiGroup: rbac.authorization.k8s.io
