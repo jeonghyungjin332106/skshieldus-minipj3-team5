@@ -40,6 +40,38 @@ services:
     volumes:
       - ./backend/logs:/app/logs
 
+  # --- [새로 추가된 AI 백엔드 서비스] ---
+  langchain:
+    build: ./langchain
+    ports:
+      - "5000:5000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - PYTHONPATH=/app
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+    volumes:
+      # 업로드된 파일들을 호스트에 영구 저장
+      - ./langchain/uploads:/app/uploads
+      # 로그 파일 저장 (선택사항)
+      - ./langchain/logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    # 리소스 제한 (선택사항)
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.25'
+
   # --- [기존 Redis 서비스] ---
   redis:
     image: redis:7

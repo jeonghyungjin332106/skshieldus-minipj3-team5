@@ -1,0 +1,24 @@
+# 핵심 패키지만 설치 (용량 최적화)
+fastapi==0.104.1
+uvicorn==0.24.0
+python-multipart==0.0.6
+python-dotenv==1.0.0
+
+# LangChain 전체 패키지 (빠진 것들 추가!)
+langchain>=0.1.0
+langchain-core>=0.1.0
+langchain-openai>=0.0.5
+langchain-community>=0.0.20
+openai>=1.6.1
+
+# 벡터 데이터베이스 (CPU 버전)
+faiss-cpu>=1.7.4
+
+# 문서 처리 (경고 메시지 해결)
+pypdf>=3.17.0
+python-docx>=1.1.0
+unstructured>=0.11.0
+
+# 기본 라이브러리
+pydantic>=2.5.0
+requests>=2.31.0

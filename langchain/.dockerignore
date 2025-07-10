@@ -1,0 +1,92 @@
+# Python 관련
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 가상환경
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE 설정
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 로그 파일
+*.log
+logs/
+
+# 데이터베이스
+*.db
+*.sqlite
+
+# OS 관련
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker 관련
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# 테스트 파일
+tests/
+test_*.py
+*_test.py
+
+# 문서
+README.md
+docs/
+*.md
+
+# 임시 파일
+tmp/
+temp/
+.tmp/
+
+# 업로드된 파일들 (런타임에 생성됨)
+uploads/*
+!uploads/.gitkeep
+
+# 환경설정 (보안상 제외)
+.env
+.env.local
+.env.production
+
+# 노드 모듈
+node_modules/
+npm-debug.log*
+
+# 대용량 파일들
+*.zip
+*.tar.gz
+*.pdf
+*.docx
+*.xlsx
