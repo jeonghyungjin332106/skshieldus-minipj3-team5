@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: langchain
+  namespace: ai-career-chat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: langchain
+  template:
+    metadata:
+      labels:
+        app: langchain
+    spec:
+      containers:
+        - name: langchain
+          image: gcr.io/plenary-ridge-464412-k5/langchain
+          ports:
+            - containerPort: 5000
+          env:
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: openai-secret
+                  key: OPENAI_API_KEY
+          volumeMounts:
+            - name: uploads-volume
+              mountPath: /app/uploads
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1"
+      volumes:
+        - name: uploads-volume
+          persistentVolumeClaim:
+            claimName: langchain-uploads-pvc
